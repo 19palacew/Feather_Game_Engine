@@ -1,0 +1,11 @@
+BUFFERS:
+create buffer
+bind buffer
+    - sets the buffer to the active buffer
+create array list
+bufferData of array list into bounded buffer
+    - All buffer objects in JS contain Float32Arrays
+Optional: gl.getError()
+    - Error 1285 is OUT_OF_MEMORY
+
+http://learnwebgl.brown37.net/rendering/buffer_object_primer.html#:~:text=The%20bindBuffer%20function%20simply%20changes,the%20new%20data%20is%20added.

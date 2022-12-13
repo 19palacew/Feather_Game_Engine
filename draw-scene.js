@@ -1,6 +1,6 @@
 import * as exports from "./gl-matrix-min.js";
 
-function drawScene(gl, programInfo, buffers, cubeRotation) {
+function drawScene(gl, programInfo, buffers, cubeRotation, cubePosition) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -36,7 +36,7 @@ function drawScene(gl, programInfo, buffers, cubeRotation) {
     mat4.translate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to translate
-      [-0.0, 0.0, -6.0]
+      [-0.0, cubePosition, -6]
     ); // amount to translate
   
     mat4.rotate(
@@ -65,7 +65,7 @@ function drawScene(gl, programInfo, buffers, cubeRotation) {
     setColorAttribute(gl, buffers, programInfo);
   
     // Tell WebGL which indices to use to index the vertices
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
+    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
   
     // Tell WebGL to use our program when drawing
     gl.useProgram(programInfo.program);

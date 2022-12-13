@@ -29,7 +29,7 @@ function main() {
 
   // Vertex shader program
 
-  const vsSource = `
+  const vertexShaderSource = `
     attribute vec4 aVertexPosition;
     attribute vec4 aVertexColor;
 
@@ -46,7 +46,7 @@ function main() {
 
   // Fragment shader program
 
-  const fsSource = `
+  const fragmentShaderSource = `
     varying lowp vec4 vColor;
 
     void main(void) {
@@ -56,7 +56,7 @@ function main() {
 
   // Initialize a shader program; this is where all the lighting
   // for the vertices and so forth is established.
-  const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+  const shaderProgram = initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
 
   // Collect all the info needed to use the shader program.
   // Look up which attributes our shader program is using
@@ -81,6 +81,8 @@ function main() {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
+  //console.log("Error" + gl.OUT_OF_MEMORY);
+
   let then = 0;
 
   // Draw the scene repeatedly
@@ -89,7 +91,9 @@ function main() {
     deltaTime = now - then;
     then = now;
 
-    drawScene(gl, programInfo, buffers, cubeRotation);
+    let cubePosition = 0;
+
+    drawScene(gl, programInfo, buffers, cubeRotation, cubePosition);
     cubeRotation += deltaTime;
 
     requestAnimationFrame(render);
@@ -100,9 +104,9 @@ function main() {
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
-function initShaderProgram(gl, vsSource, fsSource) {
-  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+function initShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
+  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
 
   // Create the shader program
 

@@ -1,51 +1,42 @@
 function initBuffers(gl) {
-    const positionBuffer = initPositionBuffer(gl);
+    const vertexBuffer = initvertexBuffer(gl);
   
     const colorBuffer = initColorBuffer(gl);
   
-    const indexBuffer = initIndexBuffer(gl);
+    const triangleBuffer = initTriangleBuffer(gl);
   
     return {
-      position: positionBuffer,
+      position: vertexBuffer,
       color: colorBuffer,
-      indices: indexBuffer,
+      triangles: triangleBuffer,
     };
   }
   
-  function initPositionBuffer(gl) {
-    // Create a buffer for the square's positions.
-    const positionBuffer = gl.createBuffer();
+  function initvertexBuffer(gl) {
+    // Create a buffer for the square's vertices.
+    const vertexBuffer = gl.createBuffer();
   
-    // Select the positionBuffer as the one to apply buffer
+    // Select the vertexBuffer as the one to apply buffer
     // operations to from here out.
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   
-    const positions = [
-      // Front face
-      -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
-  
-      // Back face
-      -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0,
-  
-      // Top face
-      -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0,
-  
-      // Bottom face
-      -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
-  
-      // Right face
-      1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0,
-  
-      // Left face
-      -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0,
+    const vertices = [
+      -1.0,-1.0,-1.0,
+      1.0,-1.0,-1.0,
+      1.0, 1.0,-1.0,
+      -1.0, 1.0,-1.0,
+      -1.0,-1.0, 1.0,
+      1.0,-1.0, 1.0,
+      1.0, 1.0, 1.0,
+      -1.0, 1.0, 1.0
     ];
   
-    // Now pass the list of positions into WebGL to build the
+    // Now pass the list of vertices into WebGL to build the
     // shape. We do this by creating a Float32Array from the
     // JavaScript array, then use it to fill the current buffer.
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   
-    return positionBuffer;
+    return vertexBuffer;
   }
   
   function initColorBuffer(gl) {
@@ -75,62 +66,24 @@ function initBuffers(gl) {
     return colorBuffer;
   }
   
-  function initIndexBuffer(gl) {
-    const indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  function initTriangleBuffer(gl) {
+    const triangleBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
   
-    // This array defines each face as two triangles, using the
-    // indices into the vertex array to specify each triangle's
-    // position.
-  
-    const indices = [
-      0,
-      1,
-      2,
-      0,
-      2,
-      3, // front
-      4,
-      5,
-      6,
-      4,
-      6,
-      7, // back
-      8,
-      9,
-      10,
-      8,
-      10,
-      11, // top
-      12,
-      13,
-      14,
-      12,
-      14,
-      15, // bottom
-      16,
-      17,
-      18,
-      16,
-      18,
-      19, // right
-      20,
-      21,
-      22,
-      20,
-      22,
-      23, // left
+    const triangles = [
+      0,2,1, 0,3,2,  // Z-
+      0,1,5, 0,5,4,  // Y-
+      1,2,6, 1,6,5,  // X+
+      2,7,6, 2,3,7,  // Y+
+      3,4,7, 3,0,4,  // X-
+      4,5,6, 4,6,7   // Z+
     ];
   
     // Now send the element array to GL
   
-    gl.bufferData(
-      gl.ELEMENT_ARRAY_BUFFER,
-      new Uint16Array(indices),
-      gl.STATIC_DRAW
-    );
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangles), gl.STATIC_DRAW);
   
-    return indexBuffer;
+    return triangleBuffer;
   }
   
   export { initBuffers };  
