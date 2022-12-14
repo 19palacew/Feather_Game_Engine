@@ -1,6 +1,6 @@
 import * as exports from "./gl-matrix-min.js";
 
-function drawScene(gl, programInfo, buffers, cubeRotation, cubePosition) {
+function drawScene(gl, programInfo, gameObjects) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -36,57 +36,50 @@ function drawScene(gl, programInfo, buffers, cubeRotation, cubePosition) {
     mat4.translate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to translate
-      [-0.0, cubePosition, -6]
+      [1, 1, -6]
     ); // amount to translate
   
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      cubeRotation, // amount to rotate in radians
+      1, // amount to rotate in radians
       [0, 0, 1]
     ); // axis to rotate around (Z)
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      cubeRotation * 0.7, // amount to rotate in radians
+      1 * 0.7, // amount to rotate in radians
       [0, 1, 0]
     ); // axis to rotate around (Y)
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      cubeRotation * 0.3, // amount to rotate in radians
+      1 * 0.3, // amount to rotate in radians
       [1, 0, 0]
     ); // axis to rotate around (X)
   
-    // Tell WebGL how to pull out the positions from the position
-    // buffer into the vertexPosition attribute.
-    setPositionAttribute(gl, buffers, programInfo);
-  
-    setColorAttribute(gl, buffers, programInfo);
-  
-    // Tell WebGL which indices to use to index the vertices
+    for (let i=0;i<gameObjects.length; i++) {
+      // Tell WebGL how to pull out the positions from the position
+      // buffer into the vertexPosition attribute.
+      setPositionAttribute(gl, gameObjects[i].mesh.buffers, programInfo);
+      setColorAttribute(gl, gameObjects[i].mesh.buffers, programInfo);
+
+      // Tell WebGL which indices to use to index the vertices
     //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
   
     // Tell WebGL to use our program when drawing
     gl.useProgram(programInfo.program);
   
     // Set the shader uniforms
-    gl.uniformMatrix4fv(
-      programInfo.uniformLocations.projectionMatrix,
-      false,
-      projectionMatrix
-    );
-    gl.uniformMatrix4fv(
-      programInfo.uniformLocations.modelViewMatrix,
-      false,
-      modelViewMatrix
-    );
+    gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
+    gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false,modelViewMatrix);
   
     {
       const vertexCount = 36;
       const type = gl.UNSIGNED_SHORT;
       const offset = 0;
       gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+    }
     }
   }
   

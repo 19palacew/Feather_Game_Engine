@@ -1,4 +1,3 @@
-import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
 let cubeRotation = 0.0;
@@ -77,9 +76,66 @@ function main() {
     },
   };
 
-  // Here's where we call the routine that builds all the
-  // objects we'll be drawing.
-  const buffers = initBuffers(gl);
+
+  const vertices = [
+    -1.0,-1.0,-1.0,
+    1.0,-1.0,-1.0,
+    1.0, 1.0,-1.0,
+    -1.0, 1.0,-1.0,
+    -1.0,-1.0, 1.0,
+    1.0,-1.0, 1.0,
+    1.0, 1.0, 1.0,
+    -1.0, 1.0, 1.0
+  ];
+
+  var colors = [
+    0.0, 0.0, 0.0, 1.0, // black
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 1.0, 0.0, 1.0, // yellow
+    0.0, 1.0, 0.0, 1.0, // green
+    0.0, 0.0, 1.0, 1.0, // blue
+    1.0, 0.0, 1.0, 1.0, // magenta
+    1.0, 1.0, 1.0, 1.0, // white
+    0.0, 1.0, 1.0, 1.0  // cyan
+  ];
+
+  const triangles = [
+    0,2,1, 0,3,2,  // Z-
+    0,1,5, 0,5,4,  // Y-
+    1,2,6, 1,6,5,  // X+
+    2,7,6, 2,3,7,  // Y+
+    3,4,7, 3,0,4,  // X-
+    4,5,6, 4,6,7   // Z+
+  ];
+  let cubeMesh = new Mesh(gl, vertices, colors, triangles);
+  let cube = new GameObject(gl, cubeMesh);
+
+  const vertices2 = [
+    -1.0,-1.0,-1.0,
+    1.0,-1.0,-1.0,
+    1.0, 1.0,-1.0,
+    -1.0, 1.0,-1.0,
+    -1.0,-1.0, 1.0,
+    1.0,-1.0, 1.0,
+    1.0, 1.0, 1.0,
+    -1.0, 1.0, 1.0
+  ];
+
+  var colors2 = [
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 0.0, 0.0, 1.0, // red
+  ];
+
+  let cubeMesh2 = new Mesh(gl, vertices2, colors2, triangles);
+  let cube2 = new GameObject(gl, cubeMesh2);
+
+  let gameObjects = [cube, cube2];
 
   //console.log("Error" + gl.OUT_OF_MEMORY);
 
@@ -91,9 +147,7 @@ function main() {
     deltaTime = now - then;
     then = now;
 
-    let cubePosition = 0;
-
-    drawScene(gl, programInfo, buffers, cubeRotation, cubePosition);
+    drawScene(gl, programInfo, gameObjects);
     cubeRotation += deltaTime;
 
     requestAnimationFrame(render);
