@@ -3,6 +3,14 @@ import { drawScene } from "./draw-scene.js";
 let cubeRotation = 0.0;
 let deltaTime = 0;
 
+// Vertex shader program
+const vertexShaderFile = await fetch('vertexShader.glsl');
+const vertexShaderSource = await vertexShaderFile.text();
+
+// Fragment shader program
+const fragmentShaderFile = await fetch('fragmentShader.glsl');
+const fragmentShaderSource = await fragmentShaderFile.text();
+
 main();
 
 //
@@ -25,33 +33,6 @@ function main() {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   // Clear the color buffer with specified clear color
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  // Vertex shader program
-
-  const vertexShaderSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec4 aVertexColor;
-
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
-
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-      vColor = aVertexColor;
-    }
-  `;
-
-  // Fragment shader program
-
-  const fragmentShaderSource = `
-    varying lowp vec4 vColor;
-
-    void main(void) {
-      gl_FragColor = vColor;
-    }
-  `;
 
   // Initialize a shader program; this is where all the lighting
   // for the vertices and so forth is established.
