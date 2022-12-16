@@ -116,6 +116,14 @@ function main() {
   let cubeMesh2 = new Mesh(gl, vertices2, colors2, triangles);
   let cube2 = new GameObject(gl, cubeMesh2);
 
+  cube.position.x = -10;
+  cube.position.y = 10;
+  cube.position.z = -30;
+
+  cube2.position.x = 2;
+  cube2.position.y = -2;
+  cube2.position.z = -15;
+
   let gameObjects = [cube, cube2];
 
   let then = 0;

@@ -1,4 +1,4 @@
-import {createMat4, createPerspectiveMatrix, transformMat4Position} from "./mat4.js";
+//import {createMat4, createPerspectiveMatrix, transformMat4Position} from "./mat4.js";
 
 function drawScene(gl, programInfo, gameObjects) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
@@ -23,21 +23,11 @@ function drawScene(gl, programInfo, gameObjects) {
     const zFar = 100.0;
   
     const projectionMatrix = createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar);
-  
-    gameObjects[0].position.x = -10;
-    gameObjects[0].position.y = 10;
-    gameObjects[0].position.z = -30;
-
-    gameObjects[1].position.x = 2;
-    gameObjects[1].position.y = -2;
-    gameObjects[1].position.z = -15;
     
     for (let i=0;i<gameObjects.length; i++) {
 
       var modelViewMatrix = createMat4();
-      console.log(modelViewMatrix);
       modelViewMatrix = transformMat4Position(modelViewMatrix, gameObjects[i].position);
-      console.log(modelViewMatrix);
 
       // Tell WebGL how to pull out the positions from the position
       // buffer into the vertexPosition attribute.
