@@ -8,6 +8,6 @@ uniform mat4 uProjectionMatrix;
 varying lowp vec4 vColor;
 
 void main(void) {
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition + worldPosition;
+    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition + vec4(0.0, 1.0, 1.0, 1.0);
     vColor = aVertexColor;
 }

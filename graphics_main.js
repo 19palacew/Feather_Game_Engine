@@ -118,8 +118,6 @@ function main() {
 
   let gameObjects = [cube, cube2];
 
-  //console.log("Error" + gl.OUT_OF_MEMORY);
-
   let then = 0;
 
   // Draw the scene repeatedly
