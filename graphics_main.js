@@ -116,7 +116,7 @@ function main() {
   let cubeMesh2 = new Mesh(gl, vertices2, colors2, triangles);
   let cube2 = new GameObject(gl, cubeMesh2);
 
-  let gameObjects = [cube];
+  let gameObjects = [cube, cube2];
 
   let then = 0;
 

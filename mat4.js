@@ -19,4 +19,13 @@ function createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar) {
     return perpMatrix;
 }
 
-export {createMat4, createPerspectiveMatrix};
+function transformMat4Position(mat4, vec3){
+    mat4[12] = mat4[0] * vec3.x + mat4[4] * vec3.y + mat4[8] * vec3.z + mat4[12];
+    mat4[13] = mat4[1] * vec3.x + mat4[5] * vec3.y + mat4[9] * vec3.z + mat4[13];
+    mat4[14] = mat4[2] * vec3.x + mat4[6] * vec3.y + mat4[10] * vec3.z + mat4[14];
+    mat4[15] = mat4[3] * vec3.x + mat4[7] * vec3.y + mat4[11] * vec3.z + mat4[15];
+    return mat4;
+}
+
+
+export {createMat4, createPerspectiveMatrix, transformMat4Position};

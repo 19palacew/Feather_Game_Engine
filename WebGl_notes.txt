@@ -8,6 +8,9 @@ bufferData of array list into bounded buffer
 Optional: gl.getError()
     - Error 1285 is OUT_OF_MEMORY
 
+Shaders:
+Shaders can clip objects with trying to apply transformations
+
 http://learnwebgl.brown37.net/rendering/buffer_object_primer.html#:~:text=The%20bindBuffer%20function%20simply%20changes,the%20new%20data%20is%20added
 
 https://en.wikibooks.org/wiki/GLSL_Programming/Applying_Matrix_Transformations
