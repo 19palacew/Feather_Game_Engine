@@ -1,4 +1,4 @@
-import { drawScene } from "./draw-scene.js";
+import { drawScene} from "./draw-scene.js";
 
 let cubeRotation = 0.0;
 let deltaTime = 0;
@@ -116,7 +116,7 @@ function main() {
   let cubeMesh2 = new Mesh(gl, vertices2, colors2, triangles);
   let cube2 = new GameObject(gl, cubeMesh2);
 
-  let gameObjects = [cube, cube2];
+  let gameObjects = [cube];
 
   let then = 0;
 

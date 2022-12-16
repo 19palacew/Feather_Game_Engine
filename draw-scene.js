@@ -1,3 +1,4 @@
+import {createMat4, createPerspectiveMatrix} from "./mat4.js";
 
 function drawScene(gl, programInfo, gameObjects) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
@@ -20,30 +21,9 @@ function drawScene(gl, programInfo, gameObjects) {
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
-    const projectionMatrix = new Float32Array(16);
-    let n = -zNear;
-    let f = -zFar;
-    let t = Math.tan(fieldOfView/2) * zNear;
-    let r = t * aspect;
-    projectionMatrix[0] = n/r;
-    projectionMatrix[5] = n/t;
-    projectionMatrix[10] = -(f+n)/(f-n);
-    projectionMatrix[11] = -2*(f*n)/(f-n);
-    projectionMatrix[14] = -1;
-    console.log(projectionMatrix);
   
-    // note: glmatrix.js always has the first argument
-    // as the destination to receive the result.
-    //mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
-    console.log(projectionMatrix);
-  
-    // Set the drawing position to the "identity" point, which is
-    // the center of the scene.
-    const modelViewMatrix = new Float32Array(16);
-    modelViewMatrix[0] = 1;
-    modelViewMatrix[5] = 1;
-    modelViewMatrix[10] = 1;
-    modelViewMatrix[15] = 1;
+    const projectionMatrix = createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar);
+    const modelViewMatrix = createMat4();
 
   
     for (let i=0;i<gameObjects.length; i++) {
