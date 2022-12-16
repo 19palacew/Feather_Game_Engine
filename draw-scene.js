@@ -36,26 +36,26 @@ function drawScene(gl, programInfo, gameObjects) {
     mat4.translate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to translate
-      [1, 1, -6]
+      [0, 0, 0]
     ); // amount to translate
   
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      1, // amount to rotate in radians
+      0, // amount to rotate in radians
       [0, 0, 1]
     ); // axis to rotate around (Z)
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      1 * 0.7, // amount to rotate in radians
+      0, // amount to rotate in radians
       [0, 1, 0]
     ); // axis to rotate around (Y)
     mat4.rotate(
       modelViewMatrix, // destination matrix
       modelViewMatrix, // matrix to rotate
-      1 * 0.3, // amount to rotate in radians
-      [1, 0, 0]
+      0, // amount to rotate in radians
+      [0, 0, 0]
     ); // axis to rotate around (X)
   
     for (let i=0;i<gameObjects.length; i++) {
@@ -75,6 +75,7 @@ function drawScene(gl, programInfo, gameObjects) {
     gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false,modelViewMatrix);
   
     {
+      
       const vertexCount = 36;
       const type = gl.UNSIGNED_SHORT;
       const offset = 0;
