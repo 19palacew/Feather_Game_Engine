@@ -1,0 +1,4 @@
+Matrix operations are done on every frame instead of on change.
+
+Matrix Rotation
+function rotateMat4(mat4, vec3) in gameComponents.js

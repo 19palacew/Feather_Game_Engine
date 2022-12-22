@@ -1,15 +1,37 @@
-import { drawScene} from "./draw-scene.js";
+// Winston Palace
+// Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
 
-let cubeRotation = 0.0;
+import {drawScene} from "./draw-scene.js";
+import {createMeshFromOBJ} from "./objImporter.js";
+
+const canvas = document.querySelector("#canvas");
+// Initialize the gl context
+const gl = canvas.getContext("webgl");
+
 let deltaTime = 0;
 
 // Vertex shader program
-const vertexShaderFile = await fetch('vertexShader.glsl');
+const vertexShaderFile = await fetch('Assets/vertexShader.glsl');
 const vertexShaderSource = await vertexShaderFile.text();
 
 // Fragment shader program
-const fragmentShaderFile = await fetch('fragmentShader.glsl');
+const fragmentShaderFile = await fetch('Assets/fragmentShader.glsl');
 const fragmentShaderSource = await fragmentShaderFile.text();
+
+// Load cube Mesh
+const cubeMeshFile = await fetch('Assets/TriangulatedCube.obj');
+const cubeFileText = await cubeMeshFile.text();
+const cubeMesh = createMeshFromOBJ(gl, cubeFileText);
+
+// Load sphere Mesh
+const sphereMeshFile = await fetch('Assets/TriangulatedSphere.obj');
+const sphereFileText = await sphereMeshFile.text();
+const sphereMesh = createMeshFromOBJ(gl, sphereFileText);
+
+// Load hotdawg Mesh
+const hotdawgMeshFile = await fetch('Assets/Hotdawg.obj');
+const hotdawgFileText = await hotdawgMeshFile.text();
+const hotdawgMesh = createMeshFromOBJ(gl, hotdawgFileText);
 
 main();
 
@@ -17,9 +39,6 @@ main();
 // start here
 //
 function main() {
-  const canvas = document.querySelector("#canvas");
-  // Initialize the GL context
-  const gl = canvas.getContext("webgl");
 
   // Only continue if WebGL is available and working
   if (gl === null) {
@@ -57,7 +76,7 @@ function main() {
     },
   };
 
-
+/*
   const vertices = [
     -1.0,-1.0,-1.0,
     1.0,-1.0,-1.0,
@@ -88,43 +107,41 @@ function main() {
     3,4,7, 3,0,4,  // X-
     4,5,6, 4,6,7   // Z+
   ];
-  let cubeMesh = new Mesh(gl, vertices, colors, triangles);
-  let cube = new GameObject(gl, cubeMesh);
+  */
 
-  const vertices2 = [
-    -1.0,-1.0,-1.0,
-    1.0,-1.0,-1.0,
-    1.0, 1.0,-1.0,
-    -1.0, 1.0,-1.0,
-    -1.0,-1.0, 1.0,
-    1.0,-1.0, 1.0,
-    1.0, 1.0, 1.0,
-    -1.0, 1.0, 1.0
+  var colors = [
+    0.0, 0.0, 0.0, 1.0, // black
+    1.0, 0.0, 0.0, 1.0, // red
+    1.0, 1.0, 0.0, 1.0, // yellow
+    0.0, 1.0, 0.0, 1.0, // green
+    0.0, 0.0, 1.0, 1.0, // blue
+    1.0, 0.0, 1.0, 1.0, // magenta
+    1.0, 1.0, 1.0, 1.0, // white
+    0.0, 1.0, 1.0, 1.0  // cyan
   ];
 
-  var colors2 = [
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 0.0, 0.0, 1.0, // red
-  ];
+  let hotdawg = new GameObject();
+  hotdawg.mesh = hotdawgMesh;
+  hotdawg.material = new Material(gl, colors);
+  hotdawg.position.x = -10;
+  hotdawg.position.y = 10;
+  hotdawg.position.z = -30;
 
-  let cubeMesh2 = new Mesh(gl, vertices2, colors2, triangles);
-  let cube2 = new GameObject(gl, cubeMesh2);
+  let cube = new GameObject();
+  cube.mesh = cubeMesh;
+  cube.material = new Material(gl, colors);
+  cube.position.x = 2;
+  cube.position.y = -2;
+  cube.position.z = -15;
 
-  cube.position.x = -10;
-  cube.position.y = 10;
-  cube.position.z = -30;
+  let sphere = new GameObject();
+  sphere.mesh = sphereMesh;
+  sphere.material = new Material(gl, colors);
+  sphere.position.x = -4;
+  sphere.position.y = -2;
+  sphere.position.z = -15;
 
-  cube2.position.x = 2;
-  cube2.position.y = -2;
-  cube2.position.z = -15;
-
-  let gameObjects = [cube, cube2];
+  let gameObjects = [hotdawg, cube, sphere];
 
   let then = 0;
 
@@ -134,8 +151,19 @@ function main() {
     deltaTime = now - then;
     then = now;
 
+    gameObjects[0].rotation.x += 1;
+    gameObjects[0].rotation.y += 1;
+    gameObjects[0].rotation.z += 1;
+
+    gameObjects[1].rotation.x += 1;
+    gameObjects[1].rotation.y += 1;
+    gameObjects[1].rotation.z += 1;
+
+    gameObjects[2].rotation.x += 1;
+    gameObjects[2].rotation.y += 1;
+    gameObjects[2].rotation.z += 1;
+
     drawScene(gl, programInfo, gameObjects);
-    cubeRotation += deltaTime;
 
     requestAnimationFrame(render);
   }

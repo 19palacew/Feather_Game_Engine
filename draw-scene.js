@@ -1,4 +1,7 @@
-//import {createMat4, createPerspectiveMatrix, transformMat4Position} from "./mat4.js";
+// Winston Palace
+// Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
+
+export { drawScene };
 
 function drawScene(gl, programInfo, gameObjects) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
@@ -26,31 +29,34 @@ function drawScene(gl, programInfo, gameObjects) {
     
     for (let i=0;i<gameObjects.length; i++) {
 
-      var modelViewMatrix = createMat4();
-      modelViewMatrix = transformMat4Position(modelViewMatrix, gameObjects[i].position);
+      let modelViewMatrix = createMat4();
+      modelViewMatrix = transformMat4(modelViewMatrix, gameObjects[i].position);
+      modelViewMatrix = rotateMat4(modelViewMatrix, gameObjects[i].rotation);
+      modelViewMatrix = scaleMat4(modelViewMatrix, gameObjects[i].scale);
 
       // Tell WebGL how to pull out the positions from the position
       // buffer into the vertexPosition attribute.
       setPositionAttribute(gl, gameObjects[i].mesh.buffers, programInfo);
-      setColorAttribute(gl, gameObjects[i].mesh.buffers, programInfo);
+      setColorAttribute(gl, gameObjects[i].material.color, programInfo);
 
       // Tell WebGL which indices to use to index the vertices
-    //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gameObjects[i].mesh.buffers.triangles);
   
-    // Tell WebGL to use our program when drawing
-    gl.useProgram(programInfo.program);
+      // Tell WebGL to use our program when drawing
+      gl.useProgram(programInfo.program);
   
-    // Set the shader uniforms
-    gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
-    gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false,modelViewMatrix);
+      // Set the shader uniforms
+      gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
+      gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix);
   
-    {
+      {
       
-      const vertexCount = 36;
-      const type = gl.UNSIGNED_SHORT;
-      const offset = 0;
-      gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
-    }
+        const vertexCount = gameObjects[i].mesh.triangleLength;
+        //console.log(vertexCount);
+        const type = gl.UNSIGNED_SHORT;
+        const offset = 0;
+        gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+      }
     }
   }
   
@@ -77,13 +83,13 @@ function drawScene(gl, programInfo, gameObjects) {
   
   // Tell WebGL how to pull out the colors from the color buffer
   // into the vertexColor attribute.
-  function setColorAttribute(gl, buffers, programInfo) {
+  function setColorAttribute(gl, color, programInfo) {
     const numComponents = 4;
     const type = gl.FLOAT;
     const normalize = false;
     const stride = 0;
     const offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+    gl.bindBuffer(gl.ARRAY_BUFFER, color);
     gl.vertexAttribPointer(
       programInfo.attribLocations.vertexColor,
       numComponents,
@@ -94,5 +100,3 @@ function drawScene(gl, programInfo, gameObjects) {
     );
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
   }
-  
-  export { drawScene };

@@ -17,3 +17,5 @@ https://en.wikibooks.org/wiki/GLSL_Programming/Applying_Matrix_Transformations
 http://www.opengl-tutorial.org/beginners-tutorials/tutorial-3-matrices/
 
 Do the attributes in the vertex shader get written to in draw-scene.js?
+
+https://webglfundamentals.org/webgl/lessons/webgl-skinning.html
