@@ -7,12 +7,18 @@ function createMeshFromOBJ(gl, meshFileText) {
     let texture  = [];
     let triangles = [];
 
+  // Meshes need to be triangulated
+
     for (var i=0; i<lines.length; i++){
         const temp = lines[i].split(' ');
         if (temp[0] == 'v'){
             vertices.push(parseFloat(temp[1]));
             vertices.push(parseFloat(temp[2]));
             vertices.push(parseFloat(temp[3]));
+        }
+        if (temp[0] == 'vt'){
+          texture.push(parseFloat(temp[1]));
+          texture.push(parseFloat(temp[2]));
         }
         if (temp[0] == 'f'){
           // f 2/1/1 3/2/1 1/3/1
@@ -27,7 +33,7 @@ function createMeshFromOBJ(gl, meshFileText) {
           }
         }
     }
-    console.log(triangles);
-    let mesh = new Mesh(gl, vertices, triangles);
+    //console.log(texture);
+    let mesh = new Mesh(gl, vertices, texture, triangles);
     return mesh;
 }

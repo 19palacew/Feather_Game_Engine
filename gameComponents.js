@@ -26,24 +26,19 @@ class Vector3 {
 // MESH
 
 class Mesh {
-    constructor(gl, vertices, triangles){
+    constructor(gl, vertices, textureCoord, triangles){
         this.vertexLength = vertices.length;
         this.triangleLength = triangles.length;
-        this.buffers = initBuffers(gl, vertices, triangles);
-    }
-
-    getTriangles(gl){
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.triangles);
-        const arrBuffer = new ArrayBuffer(this.triangleLength * Uint16Array.BYTES_PER_ELEMENT);
-        gl.getBufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(arrBuffer));
+        this.buffers = initBuffers(gl, vertices, textureCoord, triangles);
     }
 }
 
-function initBuffers(gl, vertices, triangles) {
+function initBuffers(gl, vertices, textureCoord, triangles) {
     // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
     const vertexBuffer = initvertexBuffer(gl, vertices);
+    const textureCoordBuffer = initTextureCoordinatesBuffer(gl, textureCoord);
     const triangleBuffer = initTriangleBuffer(gl, triangles);
-    return {position: vertexBuffer, triangles: triangleBuffer,};
+    return {position: vertexBuffer, textureCoordinates: textureCoordBuffer, triangles: triangleBuffer};
 }
   
 function initvertexBuffer(gl, vertices) {
@@ -51,6 +46,13 @@ function initvertexBuffer(gl, vertices) {
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     return vertexBuffer;
+}
+
+function initTextureCoordinatesBuffer(gl, textureCoordinates) {
+    const textureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW); 
+    return textureCoordBuffer;
 }
   
 function initTriangleBuffer(gl, triangles) {
@@ -63,16 +65,46 @@ function initTriangleBuffer(gl, triangles) {
 // MATERIAL
 
 class Material {
-    constructor(gl, colors){
-        this.color = initColorBuffer(gl, colors);
+    constructor(gl, textureUrl){
+        this.texture = initTexture(gl, textureUrl);
     }
 }
 
-function initColorBuffer(gl, colors) {
-    const colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-    return colorBuffer;
+function initTexture(gl, textureUrl) {
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureFile);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([255, 0, 255, 255]));
+
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
+
+    const image = new Image();
+    image.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
+     // WebGL1 has different requirements for power of 2 images
+    // vs non power of 2 images so check if the image is a
+    // power of 2 in both dimensions.
+    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+        // Yes, it's a power of 2. Generate mips.
+        gl.generateMipmap(gl.TEXTURE_2D);
+      } else {
+        // No, it's not a power of 2. Turn off mips and set
+        // wrapping to clamp to edge
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      }
+    };
+    image.src = textureUrl;
+    return texture;
+}
+
+function isPowerOf2(value) {
+    return (value & (value - 1)) === 0;
 }
 
 

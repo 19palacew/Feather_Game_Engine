@@ -33,6 +33,11 @@ const hotdawgMeshFile = await fetch('Assets/Hotdawg.obj');
 const hotdawgFileText = await hotdawgMeshFile.text();
 const hotdawgMesh = createMeshFromOBJ(gl, hotdawgFileText);
 
+//Load hotdawg Texture
+let hotdawgTextureUrl = "Assets/HotdawgDiffuse.png";
+
+let cubeTextureUrl = "Assets/CubeDiffuse.png";
+
 main();
 
 //
@@ -65,14 +70,12 @@ function main() {
     program: shaderProgram,
     attribLocations: {
       vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-      vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
+      textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
     },
     uniformLocations: {
-      projectionMatrix: gl.getUniformLocation(
-        shaderProgram,
-        "uProjectionMatrix"
-      ),
+      projectionMatrix: gl.getUniformLocation(shaderProgram,"uProjectionMatrix"),
       modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+      uSampler: gl.getUniformLocation(shaderProgram, "uSampler")
     },
   };
 
@@ -120,48 +123,48 @@ function main() {
     0.0, 1.0, 1.0, 1.0  // cyan
   ];
 
-  let hotdawg = new GameObject();
-  hotdawg.mesh = hotdawgMesh;
-  hotdawg.material = new Material(gl, colors);
-  hotdawg.position.x = -10;
-  hotdawg.position.y = 10;
-  hotdawg.position.z = -30;
+  let gameObjects = [];
 
   let cube = new GameObject();
   cube.mesh = cubeMesh;
-  cube.material = new Material(gl, colors);
+  cube.material = new Material(gl, cubeTextureUrl);
   cube.position.x = 2;
   cube.position.y = -2;
   cube.position.z = -15;
+  gameObjects.push(cube);
+
+  let hotdawg = new GameObject();
+  hotdawg.mesh = hotdawgMesh;
+  hotdawg.material = new Material(gl, hotdawgTextureUrl);
+  hotdawg.position.x = -10;
+  hotdawg.position.y = 10;
+  hotdawg.position.z = -30;
+  gameObjects.push(hotdawg);
 
   let sphere = new GameObject();
   sphere.mesh = sphereMesh;
-  sphere.material = new Material(gl, colors);
+  sphere.material = new Material(gl, hotdawgTextureUrl);
   sphere.position.x = -4;
   sphere.position.y = -2;
   sphere.position.z = -15;
-
-  let gameObjects = [hotdawg, cube, sphere];
+  gameObjects.push(sphere);
 
   let then = 0;
 
   // Draw the scene repeatedly
   function render(now) {
+
+    //console.log(gl.getError());
+
     now *= 0.001; // convert to seconds
     deltaTime = now - then;
     then = now;
 
-    gameObjects[0].rotation.x += 1;
-    gameObjects[0].rotation.y += 1;
-    gameObjects[0].rotation.z += 1;
-
-    gameObjects[1].rotation.x += 1;
-    gameObjects[1].rotation.y += 1;
-    gameObjects[1].rotation.z += 1;
-
-    gameObjects[2].rotation.x += 1;
-    gameObjects[2].rotation.y += 1;
-    gameObjects[2].rotation.z += 1;
+    for(let i=0; i<gameObjects.length; i++){
+      gameObjects[i].rotation.x += 1;
+      gameObjects[i].rotation.y += 1;
+      gameObjects[i].rotation.z += 1;
+    }
 
     drawScene(gl, programInfo, gameObjects);
 
