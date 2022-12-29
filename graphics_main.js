@@ -33,10 +33,15 @@ const hotdawgMeshFile = await fetch('Assets/Hotdawg.obj');
 const hotdawgFileText = await hotdawgMeshFile.text();
 const hotdawgMesh = createMeshFromOBJ(gl, hotdawgFileText);
 
-//Load hotdawg Texture
-let hotdawgTextureUrl = "Assets/HotdawgDiffuse.png";
+// Load tile Mesh
+const squareMeshFile = await fetch('Assets/Square.obj');
+const squareFileText = await squareMeshFile.text();
+const squareMesh = createMeshFromOBJ(gl, squareFileText);
 
+//Textures
+let hotdawgTextureUrl = "Assets/HotdawgDiffuse.png";
 let cubeTextureUrl = "Assets/CubeDiffuse.png";
+let squareTextureUrl = "Assets/TestTexture.png";
 
 main();
 
@@ -148,6 +153,14 @@ function main() {
   sphere.position.y = -2;
   sphere.position.z = -15;
   gameObjects.push(sphere);
+
+  let square = new GameObject();
+  square.mesh = squareMesh;
+  square.material = new Material(gl, cubeTextureUrl);
+  square.position.x = -1;
+  square.position.y = -2;
+  square.position.z = -15;
+  gameObjects.push(square);
 
   let then = 0;
 

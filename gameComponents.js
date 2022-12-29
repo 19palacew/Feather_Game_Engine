@@ -99,6 +99,7 @@ function initTexture(gl, textureUrl) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       }
     };
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     image.src = textureUrl;
     return texture;
 }
