@@ -43,12 +43,14 @@ function createMeshFromOBJ(gl, meshFileText) {
     //texture = [1, 1, 0, 1, 1, 0, 0, 0];
     //texture = [0, 0, 0, 1, 1, 0, 1, 1];
     //texture = [0, 0, 0, 1, 1, 0, 1, 1];
-    console.log(vertices);
-    console.log(texture);
     //triangles = [1, 2, 0, 1, 3, 2];
     for(let i=0;i<textCoordHolder.length;i+=2){
       //console.log(textCoordHolder[i] + ", " + textCoordHolder[i+1]);
     }
+
+    vertices = [0,0,0, 1,1,0, 1,0,0];
+    texture = [0,0,1,1,1,0];
+    triangles = [0, 1, 2];
 
     let mesh = new Mesh(gl, vertices, texture, triangles);
     return mesh;
