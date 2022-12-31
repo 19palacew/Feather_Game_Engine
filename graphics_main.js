@@ -3,6 +3,7 @@
 
 import {drawScene} from "./draw-scene.js";
 import {createMeshFromOBJ} from "./objImporter.js";
+import {createMeshFromMIE} from "./mieImporter.js";
 
 const canvas = document.querySelector("#canvas");
 // Initialize the gl context
@@ -19,9 +20,10 @@ const fragmentShaderFile = await fetch('Assets/fragmentShader.glsl');
 const fragmentShaderSource = await fragmentShaderFile.text();
 
 // Load cube Mesh
-const cubeMeshFile = await fetch('Assets/TriangulatedCube.obj');
+const cubeMeshFile = await fetch('Assets/Cube.mie');
 const cubeFileText = await cubeMeshFile.text();
-const cubeMesh = createMeshFromOBJ(gl, cubeFileText);
+const cubeMesh = createMeshFromMIE(gl, cubeFileText);
+
 
 // Load sphere Mesh
 const sphereMeshFile = await fetch('Assets/TriangulatedSphere.obj');
@@ -29,9 +31,9 @@ const sphereFileText = await sphereMeshFile.text();
 const sphereMesh = createMeshFromOBJ(gl, sphereFileText);
 
 // Load hotdawg Mesh
-const hotdawgMeshFile = await fetch('Assets/Hotdawg.obj');
+const hotdawgMeshFile = await fetch('Assets/Hotdawg.mie');
 const hotdawgFileText = await hotdawgMeshFile.text();
-const hotdawgMesh = createMeshFromOBJ(gl, hotdawgFileText);
+const hotdawgMesh = createMeshFromMIE(gl, hotdawgFileText);
 
 // Load tile Mesh
 const squareMeshFile = await fetch('Assets/Square.obj');
@@ -138,11 +140,12 @@ function main() {
   cube.position.z = -15;
   gameObjects.push(cube);
 
+
   let hotdawg = new GameObject();
   hotdawg.mesh = hotdawgMesh;
   hotdawg.material = new Material(gl, hotdawgTextureUrl);
   hotdawg.position.x = -10;
-  hotdawg.position.y = 10;
+  hotdawg.position.y = 5;
   hotdawg.position.z = -30;
   gameObjects.push(hotdawg);
 
@@ -152,7 +155,7 @@ function main() {
   sphere.position.x = -4;
   sphere.position.y = -2;
   sphere.position.z = -15;
-  gameObjects.push(sphere);
+  //gameObjects.push(sphere);
 
   let square = new GameObject();
   square.mesh = squareMesh;
@@ -160,7 +163,7 @@ function main() {
   square.position.x = -1;
   square.position.y = -2;
   square.position.z = -15;
-  gameObjects.push(square);
+  //gameObjects.push(square);
 
   let then = 0;
 
@@ -174,9 +177,9 @@ function main() {
     then = now;
 
     for(let i=0; i<gameObjects.length; i++){
-      gameObjects[i].rotation.x += 1;
+      //gameObjects[i].rotation.x += 1;
       gameObjects[i].rotation.y += 1;
-      gameObjects[i].rotation.z += 1;
+      //gameObjects[i].rotation.z += 1;
     }
 
     drawScene(gl, programInfo, gameObjects);

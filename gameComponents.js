@@ -29,37 +29,37 @@ class Mesh {
     constructor(gl, vertices, textureCoord, triangles){
         this.vertexLength = vertices.length;
         this.triangleLength = triangles.length;
-        this.buffers = initBuffers(gl, vertices, textureCoord, triangles);
+        this.buffers = this.initBuffers(gl, vertices, textureCoord, triangles);
     }
-}
 
-function initBuffers(gl, vertices, textureCoord, triangles) {
-    // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
-    const vertexBuffer = initvertexBuffer(gl, vertices);
-    const textureCoordBuffer = initTextureCoordinatesBuffer(gl, textureCoord);
-    const triangleBuffer = initTriangleBuffer(gl, triangles);
-    return {position: vertexBuffer, textureCoordinates: textureCoordBuffer, triangles: triangleBuffer};
-}
-  
-function initvertexBuffer(gl, vertices) {
-    const vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    return vertexBuffer;
-}
-
-function initTextureCoordinatesBuffer(gl, textureCoordinates) {
-    const textureCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW); 
-    return textureCoordBuffer;
-}
-  
-function initTriangleBuffer(gl, triangles) {
-    const triangleBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangles), gl.STATIC_DRAW); 
-    return triangleBuffer;
+    initBuffers(gl, vertices, textureCoord, triangles) {
+        // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
+        const vertexBuffer = this.initvertexBuffer(gl, vertices);
+        const textureCoordBuffer = this.initTextureCoordinatesBuffer(gl, textureCoord);
+        const triangleBuffer = this.initTriangleBuffer(gl, triangles);
+        return {position: vertexBuffer, textureCoordinates: textureCoordBuffer, triangles: triangleBuffer};
+    }
+      
+    initvertexBuffer(gl, vertices) {
+        const vertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        return vertexBuffer;
+    }
+    
+    initTextureCoordinatesBuffer(gl, textureCoordinates) {
+        const textureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW); 
+        return textureCoordBuffer;
+    }
+      
+    initTriangleBuffer(gl, triangles) {
+        const triangleBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangles), gl.STATIC_DRAW); 
+        return triangleBuffer;
+    }
 }
 
 // MATERIAL
