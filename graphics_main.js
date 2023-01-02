@@ -135,34 +135,34 @@ function main() {
   let cube = new GameObject();
   cube.mesh = cubeMesh;
   cube.material = new Material(gl, cubeTextureUrl);
-  cube.position.x = 10;
-  cube.position.y = 6;
-  cube.position.z = -40;
+  cube.transform.position.x = 10;
+  cube.transform.position.y = 6;
+  cube.transform.position.z = -40;
   gameObjects.push(cube);
 
 
   let hotdawg = new GameObject();
   hotdawg.mesh = hotdawgMesh;
   hotdawg.material = new Material(gl, hotdawgTextureUrl);
-  hotdawg.position.x = -10;
-  hotdawg.position.y = 5;
-  hotdawg.position.z = -30;
+  hotdawg.transform.position.x = -10;
+  hotdawg.transform.position.y = 5;
+  hotdawg.transform.position.z = -30;
   gameObjects.push(hotdawg);
 
   let sphere = new GameObject();
   sphere.mesh = sphereMesh;
   sphere.material = new Material(gl, hotdawgTextureUrl);
-  sphere.position.x = -4;
-  sphere.position.y = -2;
-  sphere.position.z = -15;
+  sphere.transform.position.x = -4;
+  sphere.transform.position.y = -2;
+  sphere.transform.position.z = -15;
   //gameObjects.push(sphere);
 
   let square = new GameObject();
   square.mesh = squareMesh;
   square.material = new Material(gl, cubeTextureUrl);
-  square.position.x = -1;
-  square.position.y = -2;
-  square.position.z = -15;
+  square.transform.position.x = -1;
+  square.transform.position.y = -2;
+  square.transform.position.z = -15;
   //gameObjects.push(square);
 
   let then = 0;
@@ -177,9 +177,9 @@ function main() {
     then = now;
 
     for(let i=0; i<gameObjects.length; i++){
-      //gameObjects[i].rotation.x += 1;
-      gameObjects[i].rotation.y += 1;
-      //gameObjects[i].rotation.z += 1;
+      //gameObjects[i].transform.rotation.x += 1;
+      gameObjects[i].transform.rotation.y += 1;
+      //gameObjects[i].transform.rotation.z += 1;
     }
 
     drawScene(gl, programInfo, gameObjects);

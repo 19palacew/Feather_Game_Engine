@@ -31,9 +31,9 @@ function drawScene(gl, programInfo, gameObjects) {
     for (let i=0;i<gameObjects.length; i++) {
 
       let modelViewMatrix = createMat4();
-      modelViewMatrix = transformMat4(modelViewMatrix, gameObjects[i].position);
-      modelViewMatrix = rotateMat4(modelViewMatrix, gameObjects[i].rotation);
-      modelViewMatrix = scaleMat4(modelViewMatrix, gameObjects[i].scale);
+      modelViewMatrix = transformMat4(modelViewMatrix, gameObjects[i].transform.position);
+      modelViewMatrix = rotateMat4(modelViewMatrix, gameObjects[i].transform.rotation);
+      modelViewMatrix = scaleMat4(modelViewMatrix, gameObjects[i].transform.scale);
 
       // Tell WebGL how to pull out the positions from the position
       // buffer into the vertexPosition attribute.
