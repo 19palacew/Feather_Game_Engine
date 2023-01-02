@@ -2,8 +2,14 @@
 
 class GameObject {
     constructor(){
+        this.transform = new Transform();
         this.mesh;
         this.material;
+    }
+}
+
+class Transform {
+    constructor(){
         this.position = new Vector3();
         this.rotation = new Vector3();
         this.scale = new Vector3();
@@ -16,10 +22,40 @@ class GameObject {
 // Primitives
 
 class Vector3 {
-    constructor(){
-        this.x = 0.0;
-        this.y = 0.0;
-        this.z = 0.0;
+    constructor(x, y, z){
+        if(arguments.length==3){
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        else{
+            this.x = 0.0;
+            this.y = 0.0;
+            this.z = 0.0;
+        }
+    }
+
+    add(second){
+        this.x += second.x;
+        this.y += second.y;
+        this.z += second.z;
+    }
+
+    multiply(scalar){
+        this.x *= scalar;
+        this.y *= scalar;
+        this.z *= scalar;
+    }
+
+    static add(first, second){
+        let copy = this.clone(first);
+        copy.add(second);
+        return copy;
+    }
+
+    static clone(original){
+        let copy = new Vector3(original.x, original.y, original.z);
+        return copy;
     }
 }
 

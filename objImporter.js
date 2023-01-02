@@ -47,19 +47,23 @@ function createMeshFromOBJ(gl, meshFileText) {
     for(let i=0;i<textCoordHolder.length;i+=2){
       //console.log(textCoordHolder[i] + ", " + textCoordHolder[i+1]);
     }
-    /*
+    
 
     vertices = [
     // Front face
     -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
     // Right face
-    1.0, -1.0, -1.0, 1.0, 1.0, -1.0
+    1.0, -1.0, -1.0, 1.0, 1.0, -1.0,
+    // Back Face
+    -1.0, 1.0, -1.0, 1.0, 1.0, -1.0
     ];
     texture = [
       // Front
       0.375, 0.5, 0.625, 0.5, 0.625, 0.75, 0.375, 0.750,
       // Right
-      0.875, 0.5, 0.875, 0.75
+      0.875, 0.5, 0.875, 0.75,
+      // Top
+      0.375, 1, 0.625, 1
     ];
     triangles = [
       0,
@@ -69,10 +73,11 @@ function createMeshFromOBJ(gl, meshFileText) {
       2,
       3, // front
       1,5,4,
-      1,5,2
+      1,5,2,
+      3,6,7,
+      2,3,7
 
     ];
-    */
 
     let mesh = new Mesh(gl, vertices, texture, triangles);
     return mesh;

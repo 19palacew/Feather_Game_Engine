@@ -20,9 +20,9 @@ const fragmentShaderFile = await fetch('Assets/fragmentShader.glsl');
 const fragmentShaderSource = await fragmentShaderFile.text();
 
 // Load cube Mesh
-const cubeMeshFile = await fetch('Assets/Cube.mie');
+const cubeMeshFile = await fetch('Assets/TriangulatedCube.obj');
 const cubeFileText = await cubeMeshFile.text();
-const cubeMesh = createMeshFromMIE(gl, cubeFileText);
+const cubeMesh = createMeshFromOBJ(gl, cubeFileText);
 
 
 // Load sphere Mesh
@@ -135,9 +135,9 @@ function main() {
   let cube = new GameObject();
   cube.mesh = cubeMesh;
   cube.material = new Material(gl, cubeTextureUrl);
-  cube.position.x = 2;
-  cube.position.y = -2;
-  cube.position.z = -15;
+  cube.position.x = 10;
+  cube.position.y = 6;
+  cube.position.z = -40;
   gameObjects.push(cube);
 
 
