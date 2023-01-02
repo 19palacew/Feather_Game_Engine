@@ -86,50 +86,6 @@ function main() {
     },
   };
 
-/*
-  const vertices = [
-    -1.0,-1.0,-1.0,
-    1.0,-1.0,-1.0,
-    1.0, 1.0,-1.0,
-    -1.0, 1.0,-1.0,
-    -1.0,-1.0, 1.0,
-    1.0,-1.0, 1.0,
-    1.0, 1.0, 1.0,
-    -1.0, 1.0, 1.0
-  ];
-
-  var colors = [
-    0.0, 0.0, 0.0, 1.0, // black
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 1.0, 0.0, 1.0, // yellow
-    0.0, 1.0, 0.0, 1.0, // green
-    0.0, 0.0, 1.0, 1.0, // blue
-    1.0, 0.0, 1.0, 1.0, // magenta
-    1.0, 1.0, 1.0, 1.0, // white
-    0.0, 1.0, 1.0, 1.0  // cyan
-  ];
-
-  const triangles = [
-    0,2,1, 0,3,2,  // Z-
-    0,1,5, 0,5,4,  // Y-
-    1,2,6, 1,6,5,  // X+
-    2,7,6, 2,3,7,  // Y+
-    3,4,7, 3,0,4,  // X-
-    4,5,6, 4,6,7   // Z+
-  ];
-  */
-
-  var colors = [
-    0.0, 0.0, 0.0, 1.0, // black
-    1.0, 0.0, 0.0, 1.0, // red
-    1.0, 1.0, 0.0, 1.0, // yellow
-    0.0, 1.0, 0.0, 1.0, // green
-    0.0, 0.0, 1.0, 1.0, // blue
-    1.0, 0.0, 1.0, 1.0, // magenta
-    1.0, 1.0, 1.0, 1.0, // white
-    0.0, 1.0, 1.0, 1.0  // cyan
-  ];
-
   let gameObjects = [];
 
   let cube = new GameObject();
@@ -165,6 +121,13 @@ function main() {
   square.transform.position.z = -15;
   //gameObjects.push(square);
 
+  const fieldOfView = (45 * Math.PI) / 180; // in radians
+  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  const zNear = 0.1;
+  const zFar = 100.0;
+
+  const camera = new Camera(fieldOfView, aspect, zNear, zFar);
+
   let then = 0;
 
   // Draw the scene repeatedly
@@ -176,13 +139,15 @@ function main() {
     deltaTime = now - then;
     then = now;
 
+    camera.transform.position.z -= 0.1;
+
     for(let i=0; i<gameObjects.length; i++){
       //gameObjects[i].transform.rotation.x += 1;
       gameObjects[i].transform.rotation.y += 1;
       //gameObjects[i].transform.rotation.z += 1;
     }
 
-    drawScene(gl, programInfo, gameObjects);
+    drawScene(gl, programInfo, gameObjects, camera);
 
     requestAnimationFrame(render);
   }

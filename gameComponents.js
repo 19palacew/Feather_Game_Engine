@@ -17,22 +17,45 @@ class Transform {
         this.scale.y = 1.0;
         this.scale.z = 1.0;
     }
+
+    toMat4(){
+        let modelViewMatrix = createMat4();
+        modelViewMatrix = transformMat4(modelViewMatrix, this.position);
+        modelViewMatrix = rotateMat4(modelViewMatrix, this.rotation);
+        modelViewMatrix = scaleMat4(modelViewMatrix, this.scale);
+        return modelViewMatrix;
+    }
+}
+
+class Camera{
+    #projectionMatrix;
+    constructor(fieldOfView = (45 * Math.PI) / 180, aspect = 1 + 1/3, zNear = 0.1, zFar = 100.0){
+        // Create a perspective matrix, a special matrix that is
+        // used to simulate the distortion of perspective in a camera.
+        // Default field of view is 45 degrees and we only want to see
+        // objects between zNear units and zFar units away from the camera.
+  
+        this.#projectionMatrix = createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar);
+        this.transform = new Transform();
+    }
+
+    get projectionMatrix(){
+        let temp = copyMat4(this.#projectionMatrix);
+        temp = transformMat4(temp, this.transform.position);
+        temp = rotateMat4(temp, this.transform.rotation);
+        temp = scaleMat4(temp, this.transform.scale);
+        return temp;
+    }
+
 }
 
 // Primitives
 
 class Vector3 {
-    constructor(x, y, z){
-        if(arguments.length==3){
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-        else{
-            this.x = 0.0;
-            this.y = 0.0;
-            this.z = 0.0;
-        }
+    constructor(x = 0, y = 0, z = 0){
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     add(second){
@@ -247,3 +270,23 @@ function scaleMat4(mat4, vec3){
     return mat4;
 }
 
+function copyMat4(mat4){
+    let copy = createMat4();
+    copy[0] = mat4[0];
+    copy[1] = mat4[1];
+    copy[2] = mat4[2];
+    copy[3] = mat4[3];
+    copy[4] = mat4[4];
+    copy[5] = mat4[5];
+    copy[6] = mat4[6];
+    copy[7] = mat4[7];
+    copy[8] = mat4[8];
+    copy[9] = mat4[9];
+    copy[10] = mat4[10];
+    copy[11] = mat4[11];
+    copy[12] = mat4[12];
+    copy[13] = mat4[13];
+    copy[14] = mat4[14];
+    copy[15] = mat4[15];
+    return copy;
+}
