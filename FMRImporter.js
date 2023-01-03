@@ -1,6 +1,6 @@
-export { createMeshFromMIE };
+export { createMeshFromFMR };
 
-function createMeshFromMIE(gl, meshFileText) {
+function createMeshFromFMR(gl, meshFileText) {
     const mie = JSON.parse(meshFileText);
     let vertices = mie.vertices;
     let texture = mie.textureCoordinates;

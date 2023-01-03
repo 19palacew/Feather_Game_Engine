@@ -3,7 +3,7 @@
 
 import {drawScene} from "./draw-scene.js";
 import {createMeshFromOBJ} from "./objImporter.js";
-import {createMeshFromMIE} from "./mieImporter.js";
+import {createMeshFromFMR} from "./fmrImporter.js";
 
 const canvas = document.querySelector("#canvas");
 // Initialize the gl context
@@ -31,9 +31,9 @@ const sphereFileText = await sphereMeshFile.text();
 const sphereMesh = createMeshFromOBJ(gl, sphereFileText);
 
 // Load hotdawg Mesh
-const hotdawgMeshFile = await fetch('Assets/Hotdawg.mie');
+const hotdawgMeshFile = await fetch('Assets/Hotdawg.fmr');
 const hotdawgFileText = await hotdawgMeshFile.text();
-const hotdawgMesh = createMeshFromMIE(gl, hotdawgFileText);
+const hotdawgMesh = createMeshFromFMR(gl, hotdawgFileText);
 
 // Load tile Mesh
 const squareMeshFile = await fetch('Assets/Square.obj');
@@ -139,7 +139,7 @@ function main() {
     deltaTime = now - then;
     then = now;
 
-    camera.transform.position.z -= 0.1;
+    //camera.transform.position.z -= 0.1;
 
     for(let i=0; i<gameObjects.length; i++){
       //gameObjects[i].transform.rotation.x += 1;
