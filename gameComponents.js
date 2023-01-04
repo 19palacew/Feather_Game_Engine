@@ -1,10 +1,117 @@
 // Created by Winston Palace
 
+class Shader {
+
+    static unlitVertexGLSL = 'attribute vec4 aVertexPosition;attribute vec2 aTextureCoord;uniform mat4 uModelViewMatrix;uniform mat4 uProjectionMatrix;varying highp vec2 vTextureCoord;void main(void) {gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;vTextureCoord  = aTextureCoord;}';
+    static unlitFragmentGLSL = 'varying highp vec2 vTextureCoord;uniform sampler2D uSampler;void main(void) {gl_FragColor = texture2D(uSampler, vTextureCoord);}';
+    static UNLIT = new Shader(this.unlitVertexGLSL, this.unlitFragmentGLSL, 0);
+
+    static dummyVertexGLSL = 'attribute vec4 aVertexPosition;attribute vec2 aTextureCoord;uniform mat4 uProjectionMatrix;varying highp vec2 vTextureCoord;void main(void) {gl_Position = uProjectionMatrix * aVertexPosition;vTextureCoord  = aTextureCoord;}';
+    static dummyFragmentGLSL = 'varying highp vec2 vTextureCoord;uniform sampler2D uSampler;void main(void) {gl_FragColor = texture2D(uSampler, vTextureCoord);}';
+    static DUMMY = new Shader(this.dummyVertexGLSL, this.dummyFragmentGLSL, 0);
+
+    constructor(vertexShaderSource, fragmentShaderSource, shaderType = 0) {
+        const canvas = document.querySelector("#canvas");
+        // Initialize the gl context
+        const gl = canvas.getContext("webgl");
+
+        // Initialize a shader program; this is where all the lighting
+        // for the vertices and so forth is established.
+        const shaderProgram = this.initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
+
+        // Collect all the info needed to use the shader program.
+        // Look up which attributes our shader program is using
+        // for aVertexPosition, aVertexColor and also
+        // look up uniform locations.
+        this.programInfo = null;
+        switch(shaderType){
+            case 0:
+                this.programInfo = {
+                    program: shaderProgram,
+                    attribLocations: {
+                        vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+                        textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+                    },
+                    uniformLocations: {
+                        projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+                        modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+                        uSampler: gl.getUniformLocation(shaderProgram, "uSampler")
+                    },
+                };
+                break;
+            case 1:
+                this.programInfo = {
+                    program: shaderProgram,
+                    attribLocations: {
+                        vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+                        textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+                    },
+                    uniformLocations: {
+                        projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+                        uSampler: gl.getUniformLocation(shaderProgram, "uSampler")
+                    },
+                };
+        }
+    }
+
+    //
+    // Initialize a shader program, so WebGL knows how to draw our data
+    //
+    initShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
+        const vertexShader = this.loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = this.loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        // Create the shader program
+
+        const shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+    // If creating the shader program failed, alert
+
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+        alert(
+            `Unable to initialize the shader program: ${gl.getProgramInfoLog(
+                shaderProgram
+            )}`
+        );
+        return null;
+    }
+
+    return shaderProgram;
+}
+
+    // Creates a shader of the given type, uploads the source and compiles it.
+    loadShader(gl, type, source) {
+        const shader = gl.createShader(type);
+
+        // Send the source to the shader object
+
+        gl.shaderSource(shader, source);
+
+        // Compile the shader program
+
+        gl.compileShader(shader);
+
+        // See if it compiled successfully
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`);
+            gl.deleteShader(shader);
+            return null;
+        }
+
+        return shader;
+    }
+}
+
 class GameObject {
     constructor(){
         this.transform = new Transform();
         this.mesh;
         this.material;
+        this.shader = Shader.UNLIT;
     }
 }
 

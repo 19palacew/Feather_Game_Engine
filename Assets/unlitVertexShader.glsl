@@ -1,3 +1,6 @@
+
+// NOT CURRENTLY USED
+
 attribute vec4 aVertexPosition;
 attribute vec2 aTextureCoord;
 

@@ -3,7 +3,7 @@
 
 export { drawScene };
 
-function drawScene(gl, programInfo, gameObjects, camera) {
+function drawScene(gl, gameObjects, camera) {
     gl.clearColor(0.0, 0.5, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -17,6 +17,8 @@ function drawScene(gl, programInfo, gameObjects, camera) {
     const projectionMatrix = camera.projectionMatrix;
     
     for (let i=0;i<gameObjects.length; i++) {
+
+      const programInfo = gameObjects[i].shader.programInfo;
 
       let modelViewMatrix = gameObjects[i].transform.toMat4();
 
