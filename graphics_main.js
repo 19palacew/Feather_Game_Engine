@@ -51,7 +51,7 @@ function main() {
 
   let cube = new GameObject();
   cube.mesh = cubeMesh;
-  cube.shader = Shader.UNLIT;
+  cube.shader = SHADERLIST.UNLIT;
   cube.material = new Material(gl, cubeTextureUrl);
   cube.transform.position.x = 10;
   cube.transform.position.y = 6;
@@ -61,7 +61,7 @@ function main() {
 
   let hotdawg = new GameObject();
   hotdawg.mesh = hotdawgMesh;
-  hotdawg.shader = Shader.UNLIT;
+  hotdawg.shader = SHADERLIST.UNLIT;
   hotdawg.material = new Material(gl, hotdawgTextureUrl);
   hotdawg.transform.position.x = -10;
   hotdawg.transform.position.y = 5;

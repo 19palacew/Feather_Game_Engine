@@ -4,16 +4,11 @@ class Shader {
 
     static unlitVertexGLSL = 'attribute vec4 aVertexPosition;attribute vec2 aTextureCoord;uniform mat4 uModelViewMatrix;uniform mat4 uProjectionMatrix;varying highp vec2 vTextureCoord;void main(void) {gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;vTextureCoord  = aTextureCoord;}';
     static unlitFragmentGLSL = 'varying highp vec2 vTextureCoord;uniform sampler2D uSampler;void main(void) {gl_FragColor = texture2D(uSampler, vTextureCoord);}';
-    static UNLIT = new Shader(this.unlitVertexGLSL, this.unlitFragmentGLSL, 0);
 
     static dummyVertexGLSL = 'attribute vec4 aVertexPosition;attribute vec2 aTextureCoord;uniform mat4 uProjectionMatrix;varying highp vec2 vTextureCoord;void main(void) {gl_Position = uProjectionMatrix * aVertexPosition;vTextureCoord  = aTextureCoord;}';
     static dummyFragmentGLSL = 'varying highp vec2 vTextureCoord;uniform sampler2D uSampler;void main(void) {gl_FragColor = texture2D(uSampler, vTextureCoord);}';
-    static DUMMY = new Shader(this.dummyVertexGLSL, this.dummyFragmentGLSL, 0);
 
-    constructor(vertexShaderSource, fragmentShaderSource, shaderType = 0) {
-        const canvas = document.querySelector("#canvas");
-        // Initialize the gl context
-        const gl = canvas.getContext("webgl");
+    constructor(gl, vertexShaderSource, fragmentShaderSource, shaderType = 0) {
 
         // Initialize a shader program; this is where all the lighting
         // for the vertices and so forth is established.
@@ -105,6 +100,18 @@ class Shader {
         return shader;
     }
 }
+
+class ShaderList{
+    constructor(gl){
+        this.UNLIT = new Shader(gl, Shader.unlitVertexGLSL, Shader.unlitFragmentGLSL, 0);
+        this.DUMMY = new Shader(gl, Shader.dummyVertexGLSL, Shader.dummyFragmentGLSL, 0);
+    }
+}
+
+const canvas = document.querySelector("#canvas");
+// Initialize the gl context
+const gl = canvas.getContext("webgl");
+const SHADERLIST = new ShaderList(gl);
 
 class GameObject {
     constructor(){
