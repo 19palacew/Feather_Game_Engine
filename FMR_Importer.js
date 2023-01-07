@@ -1,5 +1,3 @@
-export { createMeshFromFMR };
-
 function createMeshFromFMR(gl, meshFileText) {
     const mie = JSON.parse(meshFileText);
     let vertices = mie.vertices;

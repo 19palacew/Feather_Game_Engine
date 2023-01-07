@@ -1,8 +1,6 @@
 // Winston Palace
 // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
 
-export { drawScene };
-
 function drawScene(gl, gameObjects, camera) {
     gl.clearColor(0.0, 0.5, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
