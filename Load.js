@@ -1,14 +1,17 @@
+// Asynchronous loading of Assets (files)
 class Loader{
     constructor(){
         this.queue = new Map();
         this.loaded = 0;
     }
 
+    // Assigns a file to be downloaded later
     queueFile(url){
         console.log("Queued: " + url);
         this.queue.set(url, url);
     }
 
+    // Beings downloading a queue of files
     startDownloads(start) {
         for (let url of this.queue.keys()) {
             const ext = url.split(".").pop();
@@ -42,7 +45,7 @@ class Loader{
         }
     }
 
-
+    // Return true if all files are downloaded
     done() {
         return this.loaded==this.queue.size;
     }
