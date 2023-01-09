@@ -1,3 +1,6 @@
+// FMR (Feather Mesh and Rig) is a custom JSON based file type that allows for easy
+// loading of meshes and rigs
+
 function createMeshFromFMR(gl, meshFileText) {
     const mie = JSON.parse(meshFileText);
     let vertices = mie.vertices;

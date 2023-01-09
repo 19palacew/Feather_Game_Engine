@@ -108,12 +108,89 @@ class ShaderList{
     }
 }
 
+// Represents every object in the 3D world visible or not
 class GameObject {
     constructor(){
         this.transform = new Transform();
         this.mesh;
         this.material;
-        this.shader = Shader.UNLIT;
+        this.shader;
+        this.collider;
+        this.rigidbody;
+        this.tag;
+        // Non-Static GameObjects are more much more expensive for collisions and rendering
+        this.static;
+    }
+}
+
+class Collider{
+    static AABB = 0;
+    static SPHERE = 1;
+
+    constructor(type, position, offset, longestLengthFromCenter){
+        this.type = type;
+        this.position = position;
+        this.offset = offset;
+        this.collidingWith = [];
+        this.longestLengthFromCenter = longestLengthFromCenter;
+    }
+
+    static isColliding(collider1, collider2){
+        if (collider1.type == Collider.AABB){
+            if(collider2.type == Collider.AABB){
+                return Collider.AABBVSAABB(collider1, collider2);
+            }
+            else{
+                return Collider.AABBVSSphere(collider1, collider2);
+            }
+        }
+        if (collider1.type == Collider.SPHERE){
+            if(collider2.type == Collider.SPHERE){
+                return Collider.SphereVSSphere(collider1, collider2);
+            }
+            else{
+                // 1 and 2 swapped on purpose to prevent making extra SphereVSABBB function
+                return Collider.AABBVSSphere(collider2, collider1);
+            }
+        }
+    }
+
+    static AABBVSSphere(collider1, collider2){
+        console.log("AABBVSSphere");
+    }
+
+    static AABBVSAABB(collider1, collider2){
+        console.log("AABBVSAABB");
+    }
+
+    static SphereVSSphere(collider1, collider2) {
+        console.log("SphereVSSphere");
+        const distance = Math.sqrt(
+            (collider1.position.x - collider2.position.x) * (collider1.position.x - collider2.position.x) +
+            (collider1.position.y - collider2.position.y) * (collider1.position.y - collider2.position.y) +
+            (collider1.position.z - collider2.position.z) * (collider1.position.z - collider2.position.z)
+        );
+
+        return distance < collider1.radius + collider2.radius;
+    }
+
+}
+
+class AABBCollider extends Collider{
+    constructor(position, offset, width, length, height){
+        const c = Math.sqrt(Math.pow((1/2)*width,2)+Math.pow((1/2)*length, 2));
+        const longest = Math.sqrt(Math.pow((1/2)*height,2)+Math.pow(c,2));
+        super(Collider.AABB, position, offset, longest);
+        this.width = width;
+        this.length = length;
+        this.height = height;
+    }
+}
+
+class SphereCollider extends Collider{
+    constructor(position, offset, radius){
+        super(Collider.SPHERE, position, offset, radius);
+        this.radius = radius;
     }
 }
 
@@ -158,8 +235,6 @@ class Camera{
 
 }
 
-// Primitives
-
 class Vector3 {
     constructor(x = 0, y = 0, z = 0){
         this.x = x;
@@ -194,6 +269,7 @@ class Vector3 {
 // MESH
 
 class Mesh {
+
     constructor(gl, vertices, textureCoord, triangles){
         this.vertexLength = vertices.length;
         this.triangleLength = triangles.length;
@@ -283,6 +359,8 @@ function createMat4(){
 }
 
 function createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar) {
+    // Based off https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_model_view_projection
+    // and https://github.com/toji/gl-matrix/blob/master/src/mat4.js
     const perpMatrix = new Float32Array(16);
     const f = 1.0/Math.tan(fieldOfView/2)
     const rangeInv = 1/(zNear-zFar);

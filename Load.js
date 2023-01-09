@@ -14,6 +14,7 @@ class Loader{
     // Beings downloading a queue of files
     startDownloads(start) {
         for (let url of this.queue.keys()) {
+            // Gets the extension
             const ext = url.split(".").pop();
             switch (ext) {
                 case "png":

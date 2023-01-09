@@ -5,19 +5,23 @@ function drawScene(gl, gameObjects, camera) {
     gl.clearColor(0.0, 0.5, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
-    //gl.enable(gl.CULL_FACE); // Enable depth testing
+    //gl.enable(gl.CULL_FACE);
     gl.depthFunc(gl.LEQUAL); // Near things obscure far things
   
     // Clear the canvas before we start drawing on it.
-  
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
+    // Matrix that allows for 3D depth to be created
     const projectionMatrix = camera.projectionMatrix;
     
     for (let i=0;i<gameObjects.length; i++) {
 
       const programInfo = gameObjects[i].shader.programInfo;
 
+      // Modifies the meshes vertices to render it in the correct location
+      // While costly to recalculate, it allows us to only have to save a Transform for every object
+      // rather than a new Vector3 for every vertex.
+      // In other words, mesh reuse.
       let modelViewMatrix = gameObjects[i].transform.toMat4();
 
       // Tell WebGL how to pull out the positions from the position
@@ -44,8 +48,8 @@ function drawScene(gl, gameObjects, camera) {
       gl.uniform1i(programInfo.uniformLocations.uTexture, 0);
   
       {
+        // Draws the GameObject
         const vertexCount = gameObjects[i].mesh.triangleLength;
-        //console.log(vertexCount);
         const type = gl.UNSIGNED_SHORT;
         const offset = 0;
         gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
@@ -60,10 +64,13 @@ function drawScene(gl, gameObjects, camera) {
     const stride = 0; // how many bytes to get from one set of values to the next
     // 0 = use type and numComponents above
     const offset = 0; // how many bytes inside the buffer to start from
+
+    // Position Buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
     gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 3, type, normalize, stride, offset);
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 
+    // Texture Buffer
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textureCoordinates);
     gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, 2, type, normalize, stride, offset);
     gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
