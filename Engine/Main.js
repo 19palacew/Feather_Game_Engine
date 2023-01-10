@@ -43,7 +43,7 @@ function main() {
 			gameObjects[i].transform.position.y += VERTICALINPUT * DELTATIME * 10;
 
 			if(gameObjects[i].collider){
-				console.log(gameObjects[i].collider.offset);
+				//console.log(gameObjects[i].collider.offset);
 			}
 		}
 

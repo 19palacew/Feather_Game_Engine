@@ -1,3 +1,6 @@
+// Only For Testing Purposes
+// DO NOT USE
+
 export { createMeshFromOBJ };
 
 function createMeshFromOBJ(gl, meshFileText) {
