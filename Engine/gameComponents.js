@@ -127,12 +127,21 @@ class Collider{
     static AABB = 0;
     static SPHERE = 1;
 
+    static COLLIDERS = [];
+
     constructor(type, position, offset, longestLengthFromCenter){
         this.type = type;
         this.position = position;
         this.offset = offset;
+        this.solid = true;
         this.collidingWith = [];
+        this.isColliding = 0;
         this.longestLengthFromCenter = longestLengthFromCenter;
+        this.currentPosition = position;
+    }
+
+    updateCurrentPosition(){
+        this.currentPosition = Vector3.add(this.position, this.offset);
     }
 
     static isColliding(collider1, collider2){
@@ -159,19 +168,22 @@ class Collider{
         console.log("AABBVSSphere");
     }
 
-    static AABBVSAABB(collider1, collider2){
+    static AABBVSAABB(collider1, collider2) {
         console.log("AABBVSAABB");
     }
 
     static SphereVSSphere(collider1, collider2) {
-        console.log("SphereVSSphere");
-        const distance = Math.sqrt(
-            (collider1.position.x - collider2.position.x) * (collider1.position.x - collider2.position.x) +
-            (collider1.position.y - collider2.position.y) * (collider1.position.y - collider2.position.y) +
-            (collider1.position.z - collider2.position.z) * (collider1.position.z - collider2.position.z)
-        );
+        const d = Vector3.subtract(collider1.currentPosition, collider2.currentPosition);
+        const dot = Vector3.dot(d, d);
+        return dot <= (collider1.radius + collider2.radius) * (collider1.radius + collider2.radius)
+    }
 
-        return distance < collider1.radius + collider2.radius;
+    static inRange(collider1, collider2){
+        const x = collider2.currentPosition.x - collider1.currentPosition.x;
+        const y = collider2.currentPosition.y - collider1.currentPosition.y;
+        const z = collider2.currentPosition.z - collider1.currentPosition.z;
+        const dist = x*x+y*y+z*z;
+        return (collider1.longestLengthFromCenter + collider2.longestLengthFromCenter) * (collider1.longestLengthFromCenter + collider2.longestLengthFromCenter) >= dist;
     }
 
 }
@@ -184,6 +196,7 @@ class AABBCollider extends Collider{
         this.width = width;
         this.length = length;
         this.height = height;
+        Collider.COLLIDERS.push(this);
     }
 }
 
@@ -191,6 +204,17 @@ class SphereCollider extends Collider{
     constructor(position, offset, radius){
         super(Collider.SPHERE, position, offset, radius);
         this.radius = radius;
+        Collider.COLLIDERS.push(this);
+    }
+}
+
+class Rigidbody{
+    static GRAVITY = -9.81;
+
+    constructor(){
+        this.velocity = new Vector3();
+        this.mass = 1;
+        this.useGravity = true;
     }
 }
 
@@ -248,6 +272,12 @@ class Vector3 {
         this.z += second.z;
     }
 
+    subtract(second){
+        this.x -= second.x;
+        this.y -= second.y;
+        this.z -= second.z;
+    }
+
     multiply(scalar){
         this.x *= scalar;
         this.y *= scalar;
@@ -258,6 +288,16 @@ class Vector3 {
         let copy = this.clone(first);
         copy.add(second);
         return copy;
+    }
+
+    static subtract(first, second){
+        let copy = this.clone(first);
+        copy.subtract(second);
+        return copy;
+    }
+
+    static dot(first, second){
+        return first.x * second.x + first.y * second.y + first.z * second.z;
     }
 
     static clone(original){

@@ -3,6 +3,7 @@
 // Begin Loading Assets
 const loader = new Loader();
 loader.queueFile("Assets/Cube.fmr");
+loader.queueFile("Assets/Sphere.fmr");
 loader.queueFile("Assets/CubeDiffuse.png");
 LOAD = loader.queue;
 
@@ -12,12 +13,22 @@ function main() {
 	let gameObjects = [];
 
 	let cube = new GameObject();
-	cube.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Cube.fmr"));
+	cube.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
 	cube.shader = SHADERLIST.UNLIT;
 	cube.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
 	cube.transform.position = new Vector3(10, 6, -40);
-	cube.collider = new AABBCollider(new Vector3(), cube.transform.position, 1, 1, 1);
+	cube.collider = new SphereCollider(new Vector3(), cube.transform.position, 1);
 	gameObjects.push(cube);
+
+	for(let i=0; i<.5; i+=.5){
+		let sphere = new GameObject();
+		sphere.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
+		sphere.shader = SHADERLIST.UNLIT;
+		sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
+		sphere.transform.position = new Vector3(1, 6, -40);
+		sphere.collider = new SphereCollider(new Vector3(), sphere.transform.position, 1);
+		gameObjects.push(sphere);
+	}
 
 	// Camera Creation
 	const fieldOfView = (45 * Math.PI) / 180; // in radians
@@ -32,20 +43,39 @@ function main() {
 	// Update Scene
 	function update(now) {
 
+		// Current idea, Update CollisionPositions->CheckCollisions->RunPhysics->RunObjectScripts
+
 		now *= 0.001; // convert to seconds
 		DELTATIME = now - then;
 		then = now;
 
-		// Update Object Information
-		for (let i = 0; i < gameObjects.length; i++) {
-			gameObjects[i].transform.rotation.y += 1;
-			gameObjects[i].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
-			gameObjects[i].transform.position.y += VERTICALINPUT * DELTATIME * 10;
-
-			if(gameObjects[i].collider){
-				//console.log(gameObjects[i].collider.offset);
+		// Update Collisions
+		// Sets collision data that GameObjects can call later
+		for(let x = 0; x < Collider.COLLIDERS.length; x++){
+			for(let y = x+1; y < Collider.COLLIDERS.length; y++){
+				// Remeber to add the distance check
+				Collider.COLLIDERS[x].collidingWith = [];
+				Collider.COLLIDERS[x].isColliding = false;
+				Collider.COLLIDERS[x].updateCurrentPosition();
+				Collider.COLLIDERS[y].updateCurrentPosition();
+				// Probably a good check for mesh colliders in the future
+				//Collider.inRange(Collider.COLLIDERS[x], Collider.COLLIDERS[y]);
+				if(Collider.isColliding(Collider.COLLIDERS[x], Collider.COLLIDERS[y])){
+					Collider.COLLIDERS[x].isColliding = Collider.COLLIDERS[y].isColliding = true;
+					// TODO: figure out how to access Colliders parent GameObject
+					Collider.COLLIDERS[x].collidingWith.push(Collider.COLLIDERS[y]);
+				}
 			}
 		}
+
+		// Update Object Information
+		for (let i = 0; i < gameObjects.length; i++) {
+			
+			gameObjects[i].transform.rotation.y += 1;
+		}
+
+		gameObjects[0].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
+		gameObjects[0].transform.position.y += VERTICALINPUT * DELTATIME * 10;
 
 		
 
