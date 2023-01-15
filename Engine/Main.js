@@ -17,7 +17,8 @@ function main() {
 	cube.shader = SHADERLIST.UNLIT;
 	cube.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
 	cube.transform.position = new Vector3(10, 6, -40);
-	cube.collider = new SphereCollider(new Vector3(), cube.transform.position, 1);
+	//cube.collider = new SphereCollider(new Vector3(), 1);
+	cube.addComponent(new SphereCollider(new Vector3(), 1));
 	gameObjects.push(cube);
 
 	for(let i=0; i<.5; i+=.5){
@@ -26,7 +27,7 @@ function main() {
 		sphere.shader = SHADERLIST.UNLIT;
 		sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
 		sphere.transform.position = new Vector3(1, 6, -40);
-		sphere.collider = new SphereCollider(new Vector3(), sphere.transform.position, 1);
+		sphere.addComponent(new SphereCollider(new Vector3(), 1));
 		gameObjects.push(sphere);
 	}
 
@@ -53,16 +54,13 @@ function main() {
 		// Sets collision data that GameObjects can call later
 		for(let x = 0; x < Collider.COLLIDERS.length; x++){
 			for(let y = x+1; y < Collider.COLLIDERS.length; y++){
-				// Remeber to add the distance check
 				Collider.COLLIDERS[x].collidingWith = [];
 				Collider.COLLIDERS[x].isColliding = false;
 				Collider.COLLIDERS[x].updateCurrentPosition();
 				Collider.COLLIDERS[y].updateCurrentPosition();
-				// Probably a good check for mesh colliders in the future
-				//Collider.inRange(Collider.COLLIDERS[x], Collider.COLLIDERS[y]);
 				if(Collider.isColliding(Collider.COLLIDERS[x], Collider.COLLIDERS[y])){
+					console.log("Hit");
 					Collider.COLLIDERS[x].isColliding = Collider.COLLIDERS[y].isColliding = true;
-					// TODO: figure out how to access Colliders parent GameObject
 					Collider.COLLIDERS[x].collidingWith.push(Collider.COLLIDERS[y]);
 				}
 			}

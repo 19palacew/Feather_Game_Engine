@@ -110,16 +110,39 @@ class ShaderList{
 
 // Represents every object in the 3D world visible or not
 class GameObject {
+    #collider;
     constructor(){
         this.transform = new Transform();
         this.mesh;
         this.material;
         this.shader;
-        this.collider;
         this.rigidbody;
         this.tag;
         // Non-Static GameObjects are more much more expensive for collisions and rendering
         this.static;
+    }
+
+    addComponent(component){
+        if(component instanceof Collider){
+            this.#collider = component;
+            this.#collider.offset = this.transform.position;
+            this.#collider.gameObject = this;
+            Collider.COLLIDERS.push(this.#collider);
+        }
+    }
+
+    getComponent(componentType){
+        let component;
+        if(componentType==Collider){
+            component==this.#collider; 
+        }
+        return component;
+    }
+
+    removeComponent(componentType){
+        if(componentType == Collider){
+            this.#collider = undefined;
+        }
     }
 }
 
@@ -127,15 +150,16 @@ class Collider{
     static AABB = 0;
     static SPHERE = 1;
 
+    // Temporary until Spatial Partitioning
     static COLLIDERS = [];
 
-    constructor(type, position, offset, longestLengthFromCenter){
+    constructor(type, position, longestLengthFromCenter){
         this.type = type;
         this.position = position;
-        this.offset = offset;
-        this.solid = true;
+        this.offset;
+        this.gameObject;
+        this.isColliding = false;
         this.collidingWith = [];
-        this.isColliding = 0;
         this.longestLengthFromCenter = longestLengthFromCenter;
         this.currentPosition = position;
     }
@@ -189,22 +213,20 @@ class Collider{
 }
 
 class AABBCollider extends Collider{
-    constructor(position, offset, width, length, height){
+    constructor(position, width, length, height){
         const c = Math.sqrt(Math.pow((1/2)*width,2)+Math.pow((1/2)*length, 2));
         const longest = Math.sqrt(Math.pow((1/2)*height,2)+Math.pow(c,2));
-        super(Collider.AABB, position, offset, longest);
+        super(Collider.AABB, position, longest);
         this.width = width;
         this.length = length;
         this.height = height;
-        Collider.COLLIDERS.push(this);
     }
 }
 
 class SphereCollider extends Collider{
-    constructor(position, offset, radius){
-        super(Collider.SPHERE, position, offset, radius);
+    constructor(position, radius){
+        super(Collider.SPHERE, position, radius);
         this.radius = radius;
-        Collider.COLLIDERS.push(this);
     }
 }
 
