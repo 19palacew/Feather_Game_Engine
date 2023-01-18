@@ -111,12 +111,12 @@ class ShaderList{
 // Represents every object in the 3D world visible or not
 class GameObject {
     #collider;
+    #rigidbody;
     constructor(){
         this.transform = new Transform();
         this.mesh;
         this.material;
         this.shader;
-        this.rigidbody;
         this.tag;
         // Non-Static GameObjects are more much more expensive for collisions and rendering
         this.static;
@@ -129,12 +129,19 @@ class GameObject {
             this.#collider.gameObject = this;
             Collider.COLLIDERS.push(this.#collider);
         }
+        else if(component instanceof Rigidbody){
+            this.#rigidbody = component;
+            this.#rigidbody.gameObject = this;
+        }
     }
 
     getComponent(componentType){
         let component;
         if(componentType==Collider){
-            component==this.#collider; 
+            component=this.#collider; 
+        }
+        else if(componentType==Rigidbody){
+            component=this.#rigidbody; 
         }
         return component;
     }
@@ -237,6 +244,13 @@ class Rigidbody{
         this.velocity = new Vector3();
         this.mass = 1;
         this.useGravity = true;
+        this.gameObject;
+    }
+
+    move(){
+        const vec = Vector3.clone(this.velocity);
+        vec.multiply(DELTATIME);
+        this.gameObject.transform.position.add(vec);   
     }
 }
 

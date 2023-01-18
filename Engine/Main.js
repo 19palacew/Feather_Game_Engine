@@ -19,6 +19,7 @@ function main() {
 	cube.transform.position = new Vector3(10, 6, -40);
 	//cube.collider = new SphereCollider(new Vector3(), 1);
 	cube.addComponent(new SphereCollider(new Vector3(), 1));
+	cube.addComponent(new Rigidbody);
 	gameObjects.push(cube);
 
 	for(let i=0; i<.5; i+=.5){
@@ -28,6 +29,8 @@ function main() {
 		sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
 		sphere.transform.position = new Vector3(1, 6, -40);
 		sphere.addComponent(new SphereCollider(new Vector3(), 1));
+		sphere.addComponent(new Rigidbody);
+		sphere.getComponent(Rigidbody).velocity = new Vector3(1,1,1);
 		gameObjects.push(sphere);
 	}
 
@@ -68,7 +71,7 @@ function main() {
 
 		// Update Object Information
 		for (let i = 0; i < gameObjects.length; i++) {
-			
+			gameObjects[i].getComponent(Rigidbody).move();
 			gameObjects[i].transform.rotation.y += 1;
 		}
 
