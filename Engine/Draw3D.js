@@ -1,7 +1,7 @@
 // Winston Palace
 // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
 
-function drawScene(gl, gameObjects, camera) {
+function drawScene(gameObjects, camera) {
     gl.clearColor(0.0, 0.5, 0.0, 1.0); // Clear to black, fully opaque
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -26,7 +26,7 @@ function drawScene(gl, gameObjects, camera) {
 
       // Tell WebGL how to pull out the positions from the position
       // buffer into the vertexPosition attribute.
-      setVertexAttributes(gl, gameObjects[i].mesh.buffers, programInfo);
+      setVertexAttributes(gameObjects[i].mesh.buffers, programInfo);
 
       // Tell WebGL which indices to use to index the vertices
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gameObjects[i].mesh.buffers.triangles);
@@ -58,7 +58,7 @@ function drawScene(gl, gameObjects, camera) {
   }
   
 
-  function setVertexAttributes(gl, buffers, programInfo) {
+  function setVertexAttributes(buffers, programInfo) {
     const type = gl.FLOAT; // the data in the buffer is 32bit floats
     const normalize = false; // don't normalize
     const stride = 0; // how many bytes to get from one set of values to the next

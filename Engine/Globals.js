@@ -1,4 +1,4 @@
-var gl = null;
+let gl = null;
 let ctx = null;
 let SHADERLIST = null;
 let LOAD = null;

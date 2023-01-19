@@ -8,11 +8,11 @@ class Shader {
     static dummyVertexGLSL = 'attribute vec4 aVertexPosition;attribute vec2 aTextureCoord;uniform mat4 uProjectionMatrix;varying highp vec2 vTextureCoord;void main(void) {gl_Position = uProjectionMatrix * aVertexPosition;vTextureCoord  = aTextureCoord;}';
     static dummyFragmentGLSL = 'varying highp vec2 vTextureCoord;uniform sampler2D uSampler;void main(void) {gl_FragColor = texture2D(uSampler, vTextureCoord);}';
 
-    constructor(gl, vertexShaderSource, fragmentShaderSource, shaderType = 0) {
+    constructor(vertexShaderSource, fragmentShaderSource, shaderType = 0) {
 
         // Initialize a shader program; this is where all the lighting
         // for the vertices and so forth is established.
-        const shaderProgram = this.initShaderProgram(gl, vertexShaderSource, fragmentShaderSource);
+        const shaderProgram = this.initShaderProgram(vertexShaderSource, fragmentShaderSource);
 
         // Collect all the info needed to use the shader program.
         // Look up which attributes our shader program is using
@@ -52,9 +52,9 @@ class Shader {
     //
     // Initialize a shader program, so WebGL knows how to draw our data
     //
-    initShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
-        const vertexShader = this.loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-        const fragmentShader = this.loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    initShaderProgram(vertexShaderSource, fragmentShaderSource) {
+        const vertexShader = this.loadShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = this.loadShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
 
         // Create the shader program
 
@@ -78,7 +78,7 @@ class Shader {
 }
 
     // Creates a shader of the given type, uploads the source and compiles it.
-    loadShader(gl, type, source) {
+    loadShader(type, source) {
         const shader = gl.createShader(type);
 
         // Send the source to the shader object
@@ -102,9 +102,9 @@ class Shader {
 }
 
 class ShaderList{
-    constructor(gl){
-        this.UNLIT = new Shader(gl, Shader.unlitVertexGLSL, Shader.unlitFragmentGLSL, 0);
-        this.DUMMY = new Shader(gl, Shader.dummyVertexGLSL, Shader.dummyFragmentGLSL, 0);
+    constructor(){
+        this.UNLIT = new Shader(Shader.unlitVertexGLSL, Shader.unlitFragmentGLSL, 0);
+        this.DUMMY = new Shader(Shader.dummyVertexGLSL, Shader.dummyFragmentGLSL, 0);
     }
 }
 
@@ -346,35 +346,35 @@ class Vector3 {
 
 class Mesh {
 
-    constructor(gl, vertices, textureCoord, triangles){
+    constructor(vertices, textureCoord, triangles){
         this.vertexLength = vertices.length;
         this.triangleLength = triangles.length;
-        this.buffers = this.initBuffers(gl, vertices, textureCoord, triangles);
+        this.buffers = this.initBuffers(vertices, textureCoord, triangles);
     }
 
-    initBuffers(gl, vertices, textureCoord, triangles) {
+    initBuffers(vertices, textureCoord, triangles) {
         // Based off of https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
-        const vertexBuffer = this.initvertexBuffer(gl, vertices);
-        const textureCoordBuffer = this.initTextureCoordinatesBuffer(gl, textureCoord);
-        const triangleBuffer = this.initTriangleBuffer(gl, triangles);
+        const vertexBuffer = this.initvertexBuffer(vertices);
+        const textureCoordBuffer = this.initTextureCoordinatesBuffer(textureCoord);
+        const triangleBuffer = this.initTriangleBuffer(triangles);
         return {position: vertexBuffer, textureCoordinates: textureCoordBuffer, triangles: triangleBuffer};
     }
       
-    initvertexBuffer(gl, vertices) {
+    initvertexBuffer(vertices) {
         const vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         return vertexBuffer;
     }
     
-    initTextureCoordinatesBuffer(gl, textureCoordinates) {
+    initTextureCoordinatesBuffer(textureCoordinates) {
         const textureCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW); 
         return textureCoordBuffer;
     }
       
-    initTriangleBuffer(gl, triangles) {
+    initTriangleBuffer(triangles) {
         const triangleBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triangles), gl.STATIC_DRAW); 
@@ -385,12 +385,12 @@ class Mesh {
 // MATERIAL
 
 class Material {
-    constructor(gl, texture){
-        this.texture = initTexture(gl, texture);
+    constructor(texture){
+        this.texture = initTexture(texture);
     }
 }
 
-function initTexture(gl, image) {
+function initTexture(image) {
     const texture = gl.createTexture();
 
     const level = 0;

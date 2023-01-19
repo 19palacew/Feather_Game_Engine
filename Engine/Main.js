@@ -13,9 +13,9 @@ function main() {
 	let gameObjects = [];
 
 	let cube = new GameObject();
-	cube.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
+	cube.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
 	cube.shader = SHADERLIST.UNLIT;
-	cube.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
+	cube.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
 	cube.transform.position = new Vector3(10, 6, -40);
 	//cube.collider = new SphereCollider(new Vector3(), 1);
 	cube.addComponent(new SphereCollider(new Vector3(), 1));
@@ -24,9 +24,9 @@ function main() {
 
 	for(let i=0; i<.5; i+=.5){
 		let sphere = new GameObject();
-		sphere.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
+		sphere.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
 		sphere.shader = SHADERLIST.UNLIT;
-		sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
+		sphere.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
 		sphere.transform.position = new Vector3(1, 6, -40);
 		sphere.addComponent(new SphereCollider(new Vector3(), 1));
 		sphere.addComponent(new Rigidbody);
@@ -81,7 +81,7 @@ function main() {
 		
 
 		// Draw GameObjects
-		drawScene(gl, gameObjects, camera);
+		drawScene(gameObjects, camera);
 
 		// Loop
 		requestAnimationFrame(update);
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
 	// Create Shader List
-	SHADERLIST = new ShaderList(gl);
+	SHADERLIST = new ShaderList();
 
 	// Begin downloading assets and start game
 	console.log("Starting Downloads");
