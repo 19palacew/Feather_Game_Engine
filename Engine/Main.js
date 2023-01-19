@@ -77,13 +77,19 @@ function main() {
 		}
 
 		// Camera Movement Demo
+		// Coordiantes forward we want to move
 		let x_1 = HORIZONTALINPUT * DELTATIME * -10;
 		let y_1 = VERTICALINPUT * DELTATIME * -10;
+		// Camera rotation
 		let b = (camera.transform.rotation.y * Math.PI) / 180;
+		// Coordinates we move based on camera rotation
 		let x_2 = Math.cos(b) * x_1 - Math.sin(b) * y_1;
 		let y_2 = Math.sin(b) * x_1 + Math.cos(b) * y_1;
+		// Add the new movement to position
 		let moveVec = new Vector3(x_2, 0, y_2);
 		camera.transform.position.add(moveVec);
+		
+		// Rotate Camera
 		camera.transform.rotation.y -= MOUSECX * DELTATIME * 5;
 		
 		resetInput();
