@@ -281,13 +281,13 @@ class Camera{
         // Default field of view is 45 degrees and we only want to see
         // objects between zNear units and zFar units away from the camera.
   
-        this.#projectionMatrix = createPerspectiveMatrix(fieldOfView, aspect, zNear, zFar);
+        this.#projectionMatrix = createPerspectiveMatrix(fieldOfView, -aspect, zNear, zFar);
         this.transform = new Transform();
     }
 
     get projectionMatrix(){
         let temp = copyMat4(this.#projectionMatrix);
-        temp = transformMat4(temp, this.transform.position);
+        //temp = transformMat4(temp, this.transform.position);
         temp = rotateMat4(temp, this.transform.rotation);
         temp = scaleMat4(temp, this.transform.scale);
         return temp;

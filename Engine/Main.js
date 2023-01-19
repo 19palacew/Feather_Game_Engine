@@ -16,7 +16,7 @@ function main() {
 	cube.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
 	cube.shader = SHADERLIST.UNLIT;
 	cube.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
-	cube.transform.position = new Vector3(10, 6, -40);
+	cube.transform.position = new Vector3(10, 6, 40);
 	//cube.collider = new SphereCollider(new Vector3(), 1);
 	cube.addComponent(new SphereCollider(new Vector3(), 1));
 	cube.addComponent(new Rigidbody);
@@ -27,7 +27,7 @@ function main() {
 		sphere.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
 		sphere.shader = SHADERLIST.UNLIT;
 		sphere.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
-		sphere.transform.position = new Vector3(1, 6, -40);
+		sphere.transform.position = new Vector3(1, 6, 40);
 		sphere.addComponent(new SphereCollider(new Vector3(), 1));
 		sphere.addComponent(new Rigidbody);
 		sphere.getComponent(Rigidbody).velocity = new Vector3(1,1,1);
@@ -71,12 +71,18 @@ function main() {
 
 		// Update Object Information
 		for (let i = 0; i < gameObjects.length; i++) {
-			gameObjects[i].getComponent(Rigidbody).move();
+			//gameObjects[i].getComponent(Rigidbody).move();
 			gameObjects[i].transform.rotation.y += 1;
 		}
 
-		gameObjects[0].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
-		gameObjects[0].transform.position.y += VERTICALINPUT * DELTATIME * 10;
+		gameObjects[0].transform.position.z += 0.5;
+
+		//gameObjects[0].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
+		//gameObjects[0].transform.position.y += VERTICALINPUT * DELTATIME * 10;
+
+		camera.transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
+		camera.transform.position.z += VERTICALINPUT * DELTATIME * 10;
+		camera.transform.rotation.y = 180;
 
 		
 

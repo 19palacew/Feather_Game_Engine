@@ -22,7 +22,10 @@ function drawScene(gameObjects, camera) {
       // While costly to recalculate, it allows us to only have to save a Transform for every object
       // rather than a new Vector3 for every vertex.
       // In other words, mesh reuse.
-      let modelViewMatrix = gameObjects[i].transform.toMat4();
+      //let modelViewMatrix = gameObjects[i].transform.toMat4();
+      let transform = new Transform();
+      transform.position = Vector3.subtract(gameObjects[i].transform.position, camera.transform.position);
+      let modelViewMatrix = transform.toMat4();
 
       // Tell WebGL how to pull out the positions from the position
       // buffer into the vertexPosition attribute.
