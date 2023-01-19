@@ -2,7 +2,6 @@
 
 // Begin Loading Assets
 const loader = new Loader();
-loader.queueFile("Assets/Cube.fmr");
 loader.queueFile("Assets/Sphere.fmr");
 loader.queueFile("Assets/CubeDiffuse.png");
 LOAD = loader.queue;
@@ -22,17 +21,15 @@ function main() {
 	cube.addComponent(new Rigidbody);
 	gameObjects.push(cube);
 
-	for(let i=0; i<.5; i+=.5){
-		let sphere = new GameObject();
-		sphere.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
-		sphere.shader = SHADERLIST.UNLIT;
-		sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
-		sphere.transform.position = new Vector3(1, 6, -40);
-		sphere.addComponent(new SphereCollider(new Vector3(), 1));
-		sphere.addComponent(new Rigidbody);
-		sphere.getComponent(Rigidbody).velocity = new Vector3(1,1,1);
-		gameObjects.push(sphere);
-	}
+	let sphere = new GameObject();
+	sphere.mesh = createMeshFromFMR(gl, LOAD.get("Assets/Sphere.fmr"));
+	sphere.shader = SHADERLIST.UNLIT;
+	sphere.material = new Material(gl, LOAD.get("Assets/CubeDiffuse.png"));
+	sphere.transform.position = new Vector3(1, 6, -40);
+	sphere.addComponent(new SphereCollider(new Vector3(), 1));
+	sphere.addComponent(new Rigidbody);
+	sphere.getComponent(Rigidbody).velocity = new Vector3(1, 1, 1);
+	gameObjects.push(sphere);
 
 	// Camera Creation
 	const fieldOfView = (45 * Math.PI) / 180; // in radians
