@@ -71,11 +71,11 @@ function main() {
 
 		// Update Object Information
 		for (let i = 0; i < gameObjects.length; i++) {
-			//gameObjects[i].getComponent(Rigidbody).move();
+			gameObjects[i].getComponent(Rigidbody).move();
 			gameObjects[i].transform.rotation.y += 1;
 		}
 
-		gameObjects[0].transform.position.z += 0.5;
+		//gameObjects[0].transform.position.z += 0.5;
 
 		//gameObjects[0].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
 		//gameObjects[0].transform.position.y += VERTICALINPUT * DELTATIME * 10;
@@ -99,12 +99,15 @@ function main() {
 document.addEventListener("DOMContentLoaded", function (event) {
 
 	// Establish Canvas Layers
-	const canvas = document.querySelector("#canvas");
-	const canvas2 = document.querySelector("#canvas2");
+	const uiCanvas = document.querySelector("#ui");
+	const glCanvas = document.querySelector("#gl");
 
 	// Initialize context
-	gl = canvas.getContext("webgl");
-	ctx = canvas2.getContext("2d");
+	gl = glCanvas.getContext("webgl");
+	ctx = uiCanvas.getContext("2d");
+
+	ctx.fillStyle = "white";
+	ctx.fillText("Feather Prototype V_0.0.2", 10, 10, 200);
 
 	// Only continue if WebGL is available and working
 	if (gl === null) {
@@ -113,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		);
 		return;
 	}
+
+	startInput(glCanvas, uiCanvas);
 
 	// Set clear color to black, fully opaque
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);

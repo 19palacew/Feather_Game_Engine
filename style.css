@@ -1,0 +1,10 @@
+canvas {
+    position: absolute;
+}
+
+#ui{
+    z-index: 2;
+}
+#gl{
+    z-index: 1;
+}
