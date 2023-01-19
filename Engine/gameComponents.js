@@ -332,6 +332,10 @@ class Vector3 {
         return copy;
     }
 
+    static product(first, second){
+        return new Vector3(first.x * second.x, first.y * second.y, first.z * second.z);
+    }
+
     static dot(first, second){
         return first.x * second.x + first.y * second.y + first.z * second.z;
     }

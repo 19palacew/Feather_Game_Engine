@@ -4,6 +4,8 @@ let SHADERLIST = null;
 let LOAD = null;
 let HORIZONTALINPUT = 0;
 let VERTICALINPUT = 0;
+let MOUSECX = 0;
+let MOUSECY = 0;
 let KEYDOWN = "";
 let KEYUP = "";
 // Time Between Frames

@@ -84,4 +84,15 @@ function startInput(glCanvas, uiCanvas){
 	uiCanvas.addEventListener("click", async () => {
 		await uiCanvas.requestPointerLock();
 	});
+
+	document.addEventListener("mousemove", e => {
+		MOUSECX = e.movementX;
+		MOUSECY = e.movementY;
+		//console.log(e.movementX, e.movementY);
+	});
+}
+
+function resetInput(){
+	MOUSECX = 0;
+	MOUSECY = 0;
 }

@@ -41,6 +41,7 @@ function main() {
 	const zFar = 100.0;
 
 	const camera = new Camera(fieldOfView, aspect, zNear, zFar);
+	camera.transform.rotation.y = 180;
 
 	let then = 0;
 
@@ -71,20 +72,21 @@ function main() {
 
 		// Update Object Information
 		for (let i = 0; i < gameObjects.length; i++) {
-			gameObjects[i].getComponent(Rigidbody).move();
-			gameObjects[i].transform.rotation.y += 1;
+			//gameObjects[i].getComponent(Rigidbody).move();
+			//gameObjects[i].transform.rotation.y += 1;
 		}
 
-		//gameObjects[0].transform.position.z += 0.5;
-
-		//gameObjects[0].transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
-		//gameObjects[0].transform.position.y += VERTICALINPUT * DELTATIME * 10;
-
-		camera.transform.position.x += HORIZONTALINPUT * DELTATIME * 10;
-		camera.transform.position.z += VERTICALINPUT * DELTATIME * 10;
-		camera.transform.rotation.y = 180;
-
+		// Camera Movement Demo
+		let x_1 = HORIZONTALINPUT * DELTATIME * -10;
+		let y_1 = VERTICALINPUT * DELTATIME * -10;
+		let b = (camera.transform.rotation.y * Math.PI) / 180;
+		let x_2 = Math.cos(b) * x_1 - Math.sin(b) * y_1;
+		let y_2 = Math.sin(b) * x_1 + Math.cos(b) * y_1;
+		let moveVec = new Vector3(x_2, 0, y_2);
+		camera.transform.position.add(moveVec);
+		camera.transform.rotation.y -= MOUSECX * DELTATIME * 5;
 		
+		resetInput();
 
 		// Draw GameObjects
 		drawScene(gameObjects, camera);
