@@ -3,6 +3,7 @@
 // Begin Loading Assets
 const loader = new Loader();
 loader.queueFile("Assets/Cube.fmr");
+loader.queueFile("Assets/Plane.fmr");
 loader.queueFile("Assets/Sphere.fmr");
 loader.queueFile("Assets/CubeDiffuse.png");
 LOAD = loader.queue;
@@ -21,6 +22,17 @@ function main() {
 	cube.addComponent(new SphereCollider(new Vector3(), 1));
 	cube.addComponent(new Rigidbody);
 	gameObjects.push(cube);
+
+	let plane = new GameObject();
+	plane.mesh = createMeshFromFMR(LOAD.get("Assets/Plane.fmr"));
+	plane.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
+	plane.shader = SHADERLIST.UNLIT;
+	plane.transform.scale.x = 10;
+	plane.transform.scale.y = 10;
+	plane.transform.rotation.x = 90;
+	plane.transform.position.z = 10;
+	plane.transform.position.y = -2;
+	gameObjects.push(plane);
 
 	for(let i=0; i<.5; i+=.5){
 		let sphere = new GameObject();
@@ -80,16 +92,12 @@ function main() {
 		// Coordiantes forward we want to move
 		let x_1 = HORIZONTALINPUT * DELTATIME * -10;
 		let y_1 = VERTICALINPUT * DELTATIME * -10;
-		// Camera rotation
-		let b = (camera.transform.rotation.y * Math.PI) / 180;
-		let a = (camera.transform.rotation.x * Math.PI) / 180;
-		// Coordinates we move based on camera rotation
-		let x_2 = Math.cos(b) * x_1 - Math.sin(b) * y_1;
-		let y_2 = Math.sin(b) * x_1 + Math.cos(b) * y_1;
-		let z_2 = y_1 * Math.sin(a);
-		// Add the new movement to position
-		let moveVec = new Vector3(x_2, z_2, y_2);
+		let moveVec = camera.transform.forward();
+		moveVec.multiply(y_1);
+		//console.log(moveVec)
+
 		camera.transform.position.add(moveVec);
+		console.log(camera.transform.position)
 		
 		// Rotate Camera
 		camera.transform.rotation.y -= MOUSECX * DELTATIME * 10;

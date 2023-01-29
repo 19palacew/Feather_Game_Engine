@@ -271,6 +271,20 @@ class Transform {
         modelViewMatrix = scaleMat4(modelViewMatrix, this.scale);
         return modelViewMatrix;
     }
+
+    forward(){
+		let b = (this.rotation.y * Math.PI) / 180;
+		let a = (this.rotation.x * Math.PI) / 180;
+
+		// Coordinates we move based on rotation
+		let x_2 = Math.cos(b) * 1 - Math.sin(b) * 1;
+		let z_2 = Math.sin(b) * 1 + Math.cos(b) * 1;
+		let y_2 = 1 * Math.sin(a);
+        let forward = new Vector3(x_2, y_2, z_2);
+        //console.log(forward);
+        //forward.normalize();
+		return forward;
+    }
 }
 
 class Camera{
@@ -318,6 +332,13 @@ class Vector3 {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
+    }
+
+    normalize(){
+        const a = Math.sqrt((this.x*this.x) + (this.y*this.y) + (this.z*this.z))
+        this.x = this.x/a;
+        this.y = this.y/a;
+        this.z = this.z/a;
     }
 
     static add(first, second){
