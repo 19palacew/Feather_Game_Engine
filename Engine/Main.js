@@ -82,15 +82,18 @@ function main() {
 		let y_1 = VERTICALINPUT * DELTATIME * -10;
 		// Camera rotation
 		let b = (camera.transform.rotation.y * Math.PI) / 180;
+		let a = (camera.transform.rotation.x * Math.PI) / 180;
 		// Coordinates we move based on camera rotation
 		let x_2 = Math.cos(b) * x_1 - Math.sin(b) * y_1;
 		let y_2 = Math.sin(b) * x_1 + Math.cos(b) * y_1;
+		let z_2 = y_1 * Math.sin(a);
 		// Add the new movement to position
-		let moveVec = new Vector3(x_2, 0, y_2);
+		let moveVec = new Vector3(x_2, z_2, y_2);
 		camera.transform.position.add(moveVec);
 		
 		// Rotate Camera
-		camera.transform.rotation.y -= MOUSECX * DELTATIME * 5;
+		camera.transform.rotation.y -= MOUSECX * DELTATIME * 10;
+		camera.transform.rotation.x += MOUSECY * DELTATIME * 15;
 		
 		resetInput();
 
