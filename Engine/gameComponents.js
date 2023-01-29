@@ -273,16 +273,16 @@ class Transform {
     }
 
     forward(){
-		let b = (this.rotation.y * Math.PI) / 180;
-		let a = (this.rotation.x * Math.PI) / 180;
+		let yaw = (this.rotation.y * Math.PI) / 180;
+		let pitch = (this.rotation.x * Math.PI) / 180;
 
-		// Coordinates we move based on rotation
-		let x_2 = Math.cos(b) * 1 - Math.sin(b) * 1;
-		let z_2 = Math.sin(b) * 1 + Math.cos(b) * 1;
-		let y_2 = 1 * Math.sin(a);
+		let x_2 = -Math.cos(pitch) * Math.sin(yaw);
+		let y_2 = Math.sin(pitch);
+        let z_2 = Math.cos(pitch) * Math.cos(yaw);
+
         let forward = new Vector3(x_2, y_2, z_2);
         //console.log(forward);
-        //forward.normalize();
+        forward.normalize();
 		return forward;
     }
 }

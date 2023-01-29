@@ -97,7 +97,7 @@ function main() {
 		//console.log(moveVec)
 
 		camera.transform.position.add(moveVec);
-		console.log(camera.transform.position)
+		//console.log(camera.transform.position)
 		
 		// Rotate Camera
 		camera.transform.rotation.y -= MOUSECX * DELTATIME * 10;
