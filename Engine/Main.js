@@ -5,7 +5,10 @@ const loader = new Loader();
 loader.queueFile("Assets/Cube.fmr");
 loader.queueFile("Assets/Plane.fmr");
 loader.queueFile("Assets/Sphere.fmr");
+loader.queueFile("Assets/Asteroid.fmr");
 loader.queueFile("Assets/CubeDiffuse.png");
+loader.queueFile("Assets/Asteroid.png");
+loader.queueFile("Assets/Space.jpg");
 LOAD = loader.queue;
 
 function main() {
@@ -14,9 +17,9 @@ function main() {
 	let gameObjects = [];
 
 	let cube = new GameObject();
-	cube.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
+	cube.mesh = createMeshFromFMR(LOAD.get("Assets/Asteroid.fmr"));
 	cube.shader = SHADERLIST.UNLIT;
-	cube.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
+	cube.material = new Material(LOAD.get("Assets/Asteroid.png"));
 	cube.transform.position = new Vector3(10, 6, 40);
 	//cube.collider = new SphereCollider(new Vector3(), 1);
 	cube.addComponent(new SphereCollider(new Vector3(), 1));
@@ -34,23 +37,23 @@ function main() {
 	plane.transform.position.y = -2;
 	gameObjects.push(plane);
 
-	for(let i=0; i<.5; i+=.5){
-		let sphere = new GameObject();
-		sphere.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
-		sphere.shader = SHADERLIST.UNLIT;
-		sphere.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
-		sphere.transform.position = new Vector3(1, 6, 40);
-		sphere.addComponent(new SphereCollider(new Vector3(), 1));
-		sphere.addComponent(new Rigidbody);
-		sphere.getComponent(Rigidbody).velocity = new Vector3(1,1,1);
-		gameObjects.push(sphere);
-	}
+	let sphere = new GameObject();
+	sphere.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
+	sphere.shader = SHADERLIST.UNLIT;
+	sphere.material = new Material(LOAD.get("Assets/Space.jpg"));
+	sphere.transform.position = new Vector3(1, 6, 40);
+	sphere.transform.scale = new Vector3(200, 200, 200)
+	sphere.addComponent(new SphereCollider(new Vector3(), 1));
+	sphere.addComponent(new Rigidbody);
+	sphere.getComponent(Rigidbody).velocity = new Vector3(1, 1, 1);
+	gameObjects.push(sphere);
+
 
 	// Camera Creation
 	const fieldOfView = (45 * Math.PI) / 180; // in radians
 	const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
 	const zNear = 0.1;
-	const zFar = 100.0;
+	const zFar = 1000.0;
 
 	const camera = new Camera(fieldOfView, aspect, zNear, zFar);
 	camera.transform.rotation.y = 180;
