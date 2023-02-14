@@ -9,6 +9,8 @@ loader.queueFile("Assets/Asteroid.fmr");
 loader.queueFile("Assets/CubeDiffuse.png");
 loader.queueFile("Assets/Asteroid.png");
 loader.queueFile("Assets/Space.jpg");
+loader.queueFile("Assets/Laser.jpg");
+loader.queueFile("Assets/SpaceShipHUD.png");
 LOAD = loader.queue;
 
 function main() {
@@ -16,26 +18,17 @@ function main() {
 	// GameObjecs in scene (Hierarchy)
 	let gameObjects = [];
 
-	let cube = new GameObject();
-	cube.mesh = createMeshFromFMR(LOAD.get("Assets/Asteroid.fmr"));
-	cube.shader = SHADERLIST.UNLIT;
-	cube.material = new Material(LOAD.get("Assets/Asteroid.png"));
-	cube.transform.position = new Vector3(10, 6, 40);
-	//cube.collider = new SphereCollider(new Vector3(), 1);
-	cube.addComponent(new SphereCollider(new Vector3(), 1));
-	cube.addComponent(new Rigidbody);
-	gameObjects.push(cube);
-
-	let plane = new GameObject();
-	plane.mesh = createMeshFromFMR(LOAD.get("Assets/Plane.fmr"));
-	plane.material = new Material(LOAD.get("Assets/CubeDiffuse.png"));
-	plane.shader = SHADERLIST.UNLIT;
-	plane.transform.scale.x = 10;
-	plane.transform.scale.y = 10;
-	plane.transform.rotation.x = 90;
-	plane.transform.position.z = 10;
-	plane.transform.position.y = -2;
-	gameObjects.push(plane);
+	for(let b=0;b<100;b=b+10){
+		let asteroid = new GameObject();
+		asteroid.mesh = createMeshFromFMR(LOAD.get("Assets/Asteroid.fmr"));
+		asteroid.shader = SHADERLIST.UNLIT;
+		asteroid.material = new Material(LOAD.get("Assets/Asteroid.png"));
+		asteroid.transform.position = new Vector3(b, 6, 40);
+		asteroid.addComponent(new SphereCollider(new Vector3(), 1));
+		asteroid.addComponent(new Rigidbody);
+		asteroid.tag = "asteroid";
+		gameObjects.push(asteroid);
+	}
 
 	let sphere = new GameObject();
 	sphere.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
@@ -43,10 +36,10 @@ function main() {
 	sphere.material = new Material(LOAD.get("Assets/Space.jpg"));
 	sphere.transform.position = new Vector3(1, 6, 40);
 	sphere.transform.scale = new Vector3(200, 200, 200)
-	sphere.addComponent(new SphereCollider(new Vector3(), 1));
 	sphere.addComponent(new Rigidbody);
-	sphere.getComponent(Rigidbody).velocity = new Vector3(1, 1, 1);
 	gameObjects.push(sphere);
+
+	let score = 0
 
 
 	// Camera Creation
@@ -62,6 +55,10 @@ function main() {
 
 	// Update Scene
 	function update(now) {
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		ctx.drawImage(LOAD.get("Assets/SpaceShipHUD.png"), 0, 0, ctx.canvas.width, ctx.canvas.height)
+		ctx.font = "30px Arial";
+		ctx.fillText(score, 20, 40);
 
 		// Current idea, Update CollisionPositions->CheckCollisions->RunPhysics->RunObjectScripts
 
@@ -78,17 +75,42 @@ function main() {
 				Collider.COLLIDERS[x].updateCurrentPosition();
 				Collider.COLLIDERS[y].updateCurrentPosition();
 				if(Collider.isColliding(Collider.COLLIDERS[x], Collider.COLLIDERS[y])){
-					console.log("Hit");
+					//console.log("Hit");
 					Collider.COLLIDERS[x].isColliding = Collider.COLLIDERS[y].isColliding = true;
 					Collider.COLLIDERS[x].collidingWith.push(Collider.COLLIDERS[y]);
+					Collider.COLLIDERS[y].collidingWith.push(Collider.COLLIDERS[x]);
 				}
 			}
 		}
 
 		// Update Object Information
 		for (let i = 0; i < gameObjects.length; i++) {
-			//gameObjects[i].getComponent(Rigidbody).move();
-			//gameObjects[i].transform.rotation.y += 1;
+			if(gameObjects[i].tag=="laser"){
+				let camVec = Vector3.clone(gameObjects[i].transform.Forward);
+				camVec.multiply(DELTATIME*40);
+				gameObjects[i].transform.position.subtract(camVec);
+				if(Math.abs(gameObjects[i].transform.position.x-camera.transform.position.x)>100 || Math.abs(gameObjects[i].transform.position.y-camera.transform.position.y)>100 || Math.abs(gameObjects[i].transform.position.z-camera.transform.position.z)>100){
+					Collider.COLLIDERS.splice(Collider.COLLIDERS.indexOf(gameObjects[i].collider), 1)
+					gameObjects.splice(gameObjects.indexOf(gameObjects[i]), 1)
+					continue;
+				}
+			}
+			// Delete Both Laser and Astroid if hit
+			if(gameObjects[i].getComponent(Collider)){
+				if(gameObjects[i].getComponent(Collider).isColliding && gameObjects[i].getComponent(Collider).collidingWith[0]){
+					if(gameObjects[i].getComponent(Collider).collidingWith[0].gameObject.tag != "laser"){
+						Collider.COLLIDERS.splice(Collider.COLLIDERS.indexOf(gameObjects[i].collider), 1);
+						gameObjects.splice(gameObjects.indexOf(gameObjects[i]), 1);
+						continue;
+					}
+					if(gameObjects[i].tag = "asteroid"){
+						Collider.COLLIDERS.splice(Collider.COLLIDERS.indexOf(gameObjects[i].collider), 1);
+						gameObjects.splice(gameObjects.indexOf(gameObjects[i]), 1);
+						score = score + 1;
+						continue;
+					}
+				}
+			}
 		}
 
 		// Camera Movement Demo
@@ -105,11 +127,30 @@ function main() {
 		// Rotate Camera
 		camera.transform.rotation.y -= MOUSECX * DELTATIME * 10;
 		camera.transform.rotation.x += MOUSECY * DELTATIME * 15;
+		sphere.transform.position = camera.transform.position
+
+		if(KEYDOWN==" "){
+			let laser = new GameObject();
+			laser.mesh = createMeshFromFMR(LOAD.get("Assets/Sphere.fmr"));
+			laser.shader = SHADERLIST.UNLIT;
+			laser.material = new Material(LOAD.get("Assets/Laser.jpg"));
+			laser.transform.scale = new Vector3(.1, .1, .1)
+			let vec = Vector3.clone(camera.transform.position)
+			vec.subtract(new Vector3(0,1,0));
+			laser.transform.position = vec;
+			laser.addComponent(new SphereCollider(new Vector3(), 1));
+			laser.addComponent(new Rigidbody);
+			laser.tag = "laser";
+			laser.transform.Forward = Vector3.clone(camera.transform.forward());
+			gameObjects.push(laser);
+		}
 		
 		resetInput();
 
 		// Draw GameObjects
 		drawScene(gameObjects, camera);
+
+		KEYDOWN = ""
 
 		// Loop
 		requestAnimationFrame(update);

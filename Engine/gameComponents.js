@@ -262,6 +262,9 @@ class Transform {
         this.scale.x = 1.0;
         this.scale.y = 1.0;
         this.scale.z = 1.0;
+        // Naming convention will be fixed in future update but not in this demo
+        // I will have to captialize class funtion names as Javascript cannot tell between .forward and .forward()
+        this.Forward = null;
     }
 
     toMat4(){
